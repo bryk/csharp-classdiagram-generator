@@ -1,21 +1,19 @@
-grammar csmod;
+grammar CSharp;
 
 options {
-	language=Python;
+	language=Python3;
   output=AST;
   ASTLabelType=CommonTree;
 }
 
 @header {
-  #package lang.csharp;
 }
 
 @lexer::header {
-  #package lang.csharp;
 }
 
 compilation_unit:
-	namespace_body[True] 
+	namespace_body[True];
 
 namespace_declaration:
 	'namespace'   qualified_identifier   namespace_block   ';'? ;

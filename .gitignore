@@ -1,3 +1,9 @@
+#vim
+*.swp
+
+#antlr
+*.tokens
+
 *.py[cod]
 
 # C extensions
