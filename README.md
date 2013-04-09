@@ -5,6 +5,12 @@ This is a simple class diagram generator for C# 4.0 language. It is a command li
 
 # Running cscdgenerator
 
+If you want to install scruffy:
+```
+$ cd lib
+$ ./initscruffy
+```
+
 If you don't have antlr3 runtime installed (which is most propable):
 ```bash
 $ cd <repository_directory>
