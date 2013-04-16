@@ -3,6 +3,7 @@
 import sys
 import antlr3
 import antlr3.tree
+
 from CSharpParser import CSharpParser
 from CSharpLexer import CSharpLexer
 
@@ -13,17 +14,8 @@ def main():
   tokens = antlr3.CommonTokenStream(lexer)
   parser = CSharpParser(tokens)
   r = parser.compilation_unit()
-
-  # this is the root of the AST
-  root = r.tree
-
-  print(r)
-  print(root)
-
-  nodes = antlr3.tree.CommonTreeNodeStream(root)
-  #nodes.setTokenStream(tokens)
-  #eval = Eval(nodes)
-  #eval.prog()
+  print(r.ast)
+  print(r.ast.toStringTree())
   return
 
 if __name__ == '__main__':
