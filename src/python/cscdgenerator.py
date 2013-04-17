@@ -5,6 +5,7 @@ import os
 import sys
 import antlr3
 import antlr3.tree
+
 from CSharpParser import CSharpParser
 from CSharpLexer import CSharpLexer
 
@@ -341,10 +342,6 @@ def createPng(rep):
   defs=defs[:-2]
   print(defs)
   os.system("suml --png \""+defs+"\" > pngs/"+pngName+".png")
-
-
-
-  
   
 #TODO(bryk): this is just some piece of dummy code
 def main():
@@ -353,22 +350,8 @@ def main():
   tokens = antlr3.CommonTokenStream(lexer)
   parser = CSharpParser(tokens)
   r = parser.compilation_unit()
-
-  # this is the root of the AST
-  root = r.tree
-
-  print(r)
-  print(root)
-
-  nodes = antlr3.tree.CommonTreeNodeStream(root)
-  #nodes.setTokenStream(tokens)
-  #eval = Eval(nodes)
-  #eval.prog()
-  
-  #rep = Representation()
-  #createSample(rep)
-  #createPng(rep)
-  
+  print(r.ast)
+  print(r.ast.toStringTree())
   return
 
 def sample():
@@ -379,3 +362,4 @@ def sample():
 if __name__ == '__main__':
   #main()
   sample()
+

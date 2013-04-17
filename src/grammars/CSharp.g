@@ -7,20 +7,25 @@ options {
 }
 
 @header {
+  import ast
 }
 
 @lexer::header {
 }
 
-compilation_unit:
-	namespace_body[True];
+compilation_unit returns [ast]:
+	namespace_body {$ast = $namespace_body.ast;};
 
-namespace_declaration:
-	'namespace'   qualified_identifier   namespace_block   ';'? ;
+namespace_declaration returns [ast]:
+	'namespace'   qualified_identifier   namespace_block   ';'? {
+    $ast = ast.Namespace($qualified_identifier.text)
+  };
 namespace_block:
-	'{'   namespace_body[False]   '}' ;
-namespace_body[bGlobal]:
-	extern_alias_directives?   using_directives?   global_attributes?   namespace_member_declarations? ;
+	'{'   namespace_body   '}' ;
+namespace_body returns [ast]:
+	extern_alias_directives?   using_directives?   global_attributes?   namespace_member_declarations? {
+    $ast = $namespace_member_declarations.ast
+  };
 extern_alias_directives:
 	extern_alias_directive+ ;
 extern_alias_directive:
@@ -34,10 +39,10 @@ using_alias_directive:
 	'using'	  identifier   '='   namespace_or_type_name   ';' ;
 using_namespace_directive:
 	'using'   namespace_name   ';' ;
-namespace_member_declarations:
-	namespace_member_declaration+ ;
-namespace_member_declaration:
-	namespace_declaration
+namespace_member_declarations returns [ast]:
+	namespace_member_declaration+ {$ast = $namespace_member_declaration.ast};
+namespace_member_declaration returns [ast]:
+	namespace_declaration {$ast = $namespace_declaration.ast}
 	| attributes?   modifiers?   type_declaration ;
 type_declaration:
 	('partial') => 'partial'   (class_declaration
