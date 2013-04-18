@@ -3,6 +3,23 @@
 import os
 pngName = "name"
 allIds = dict()
+allUsings = dict()
+allUsings[""] = dict()
+
+
+class RepresentationV1:
+  def __init__(self):
+    self.classes = []
+    self.interfaces = []
+    self.structs = []
+  def addClass(self, cl):
+    self.classes.append(cl)
+  def addInterface(self, iface):
+    self.interfaces.append(iface)
+  def addStruct(self, struct):
+    self.structs.append(struct)
+    
+repV1 = RepresentationV1()
 ###
 # AccessModifier.name moze miec tylko jedna z czterech wartosci
 ###
@@ -310,7 +327,7 @@ def createSample(rep):
   biteFile = File("Bite")
   rep.addFile(biteFile)
   biteNamespace = Namespace("Bite")
-  biteFile.addInterface(biteNamespace);
+  biteFile.addNamespace(biteNamespace);
   bite = Iface("Bite")
   biteNamespace.addInterface(bite)
   teeth = Type("Teeth")
@@ -452,39 +469,167 @@ def createSample(rep):
   lion.addMethod(attackImpl)
 
 
-def setPathId(f,name):
-  if isinstance(f,Namespace):
-    for nspace in f.namespaces :
-      setPathId(nspace, name+"."+f.name)
-   #klasy
-    for cl in f.classes:
-      cl.pathName = name+"."+f.name+"."+cl.name
-      if cl.pathName[0].startswith('.'):
-        cl.pathName=cl.pathName[1:]
-      allIds[cl.pathName]=cl  
-   #interfejsy
-    for cl in f.interfaces:
-      cl.pathName = name+"."+f.name+"."+cl.name
-      if cl.pathName[0].startswith('.'):
-        cl.pathName=cl.pathName[1:]
-      allIds[cl.pathName]=cl 
-  else :
-    for nspace in f.namespaces :
-      setPathId(nspace, name)
-    for cl in f.classes:
-      cl.pathName = cl.name
-      allIds[cl.pathName]=cl
-    for iface in f.interfaces:
-      iface.pathName = iface.name
-      allIds[iface.pathName]=iface    
+def addToNamespaceUsings(name, superName, usings):
+  sp = allUsings[superName]
+  usi = dict()
+  for u in sp:
+    usi[u.name]=u
+  for u in usings:
+    usi[u.name]=u
+  allUsings[name]=usi
 
+
+
+
+def printIds():
+  for ID in allIds :
+    print(ID)
+
+def printUsings():
+  for ID in allUsings.keys():
+    print(ID)
+    for using in allUsings[ID]:
+      print("   "+using)
+
+
+def attrsRep(attributes):
+  attrs=";"
+  for attr in attributes:
+    if attr.access.access is public:
+      attrs+="+"
+    elif attr.access.access is private:
+      attrs+="-"
+    elif attr.access.access is protected:
+      attrs+="#"
+    attrs+=attr.name + " : " + attr.typeOfAttr.name+";"
+  attrs = attrs[1:-1]   
+  return attrs
+
+def methRep(meths):
+  methods=";"
+  for method  in meths:
+    meth=""
+    if method.abstract :
+      meth+="~"
+    if method.access.access is public:
+      meth+="+"
+    elif method.access.access is private:
+      meth+="-"
+    elif method.access.access is protected:
+      meth+="#"
+    meth+=method.name + "("
+    
+    parms="."
+  
+    for param in method.params:
+      parms += param.name+":"+param.typeOfParam.name+"." 
+      
+    parms=parms[1:-1]
+    meth+=parms+"):"+method.returnType.name+";"
+    
+    methods+=meth+";"
+    
+  methods=methods[1:-1]
+  return methods
+
+def ifaceRep(iface):
+  iface.strRep = "<<Interface>>;"+iface.name
+  attrs=attrsRep(iface.attributes)
+  methods=methRep(iface.methods)
+  if not (attrs is ""):
+    iface.strRep += "|"+attrs
+  if not (methods is ""):
+    iface.strRep += "|"+methods
+
+def classRep(cl):
+  if cl.abstract :
+    cl.strRep= "<<Abstract>>;"+cl.name
+  else :
+    cl.strRep = cl.name
+  attrs=attrsRep(cl.attributes)
+  methods=methRep(cl.methods)
+  if not (attrs is ""):
+    cl.strRep += "|"+attrs
+  if not (methods is ""):
+    cl.strRep += "|"+methods
+
+def setPathId(f,name):
+  
+  if isinstance(f,Namespace):
+    prefName = name+"."+f.name+"."
+  else :
+    prefName = name
+  if prefName.startswith("."):
+    prefName = prefName[1:]
+  #print("i"+("" if name is "" else (name+"."))+f.name)
+  #print("I"+name)
+  addToNamespaceUsings(("" if name is "" else (name+"."))+f.name,name,f.usings)
+  for nspace in f.namespaces :
+    setPathId(nspace, prefName)
+   #klasy
+  for cl in f.classes:
+    cl.pathName = prefName+cl.name
+    allIds[cl.pathName]=cl
+    classRep(cl) 
+    repV1.addClass(cl)
+   #interfejsy
+  for iface in f.interfaces:
+    iface.pathName = prefName+iface.name 
+    allIds[iface.pathName]=iface
+    ifaceRep(iface)
+    repV1.addInterface(iface)
+  #structs 
+  for struct in f.structs:
+    struct.pathName = prefName+struct.name
+    allIds[iface.pathName]=iface
+    repV1.addStruct(struct)
+
+def getFatherExtendIface(iface,father):
+  pass
+def getFatherImplement(cl,father):
+  pass
+def getFatherExtend(cl,father):
+  pass
+
+def createOutString():
+  defs=""
+  for iface in repV1.interfaces:
+    defs = defs + "["+iface.strRep+"], "
+  for cl in repV1.classes:
+    defs = defs + "["+cl.strRep+"], "
+  
+  
+  for iface in repV1.interfaces:
+    for father in iface.extends:
+      defs = defs + "["+getFatherExtendIface(iface,father)+"]^-.-["+iface.strRep+"], "
+      
+  for cl in repV1.classes:
+    for father in cl.implement:
+      defs = defs + "["+getFatherImplement(cl,father)+"]^-.-["+cl.strRep+"], "
+  
+  for cl in repV1.classes:
+    if cl.extends :
+      defs = defs+ "["+getFatherExtend(cl,cl.extend)+"]^-["+cl.strRep+"], "
+
+  print(defs)
+  defs=defs[:-2]
+  return defs
+  
+  
 def createPng(rep):
   #print(rep.toStringTree())
   for f in rep.files:
     setPathId(f,"")
-  for ID in allIds :
-    print(ID)
-    
+  
+  printIds()
+  printUsings()
+
+
+  defs =createOutString()
+  print(defs)
+  os.system("suml --png \""+defs+"\" > pngs/"+pngName+".png")
+
+
 def createPngX(rep):
   #rep = Representation()
   defs =""# "[User|+Forename;+Surname;+HashedPassword;-Salt|+Login();+Logout()]"
@@ -595,15 +740,8 @@ def createPngX(rep):
   os.system("suml --png \""+defs+"\" > pngs/"+pngName+".png")
 
 
-class RepresentationV1:
-  def __init__(self):
-    self.classes = []
-    self.interfaces = []
-  def addClass(self, cl):
-    self.classes.append(cl)
-  def addInterface(self, iface):
-    self.interfaces.append(iface)
 
+    
 def createSampleV1(rep):
   #rep = Representation()
   intrn = AccessModifier()
