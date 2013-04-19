@@ -2,9 +2,7 @@
 
 import os
 pngName = "name"
-allIds = dict()
-allUsings = dict()
-allUsings[""] = dict()
+
 
 
 class RepresentationV1:
@@ -78,6 +76,15 @@ class Using(Node):
     self.name = name   # Oczekuje ze to bedzie mialo format : "NamespaceZewnetrzny.NamespaceSrodkowy.NamespaceWewnetrzny" itp.
   def toStringTree(self,tabs=""):
     return '{1}Using: [{0}]\n'.format(self.name,tabs)  
+
+
+allIds = dict()
+allUsings = dict()
+usingDefault = Using("")
+defaultUsing = dict()
+defaultUsing[""]=usingDefault
+allUsings[""] = defaultUsing
+
     
 class Namespace(File):
   def __init__(self, name):
@@ -313,6 +320,7 @@ def createSample(rep):
   usingEating = Using("Eating")
   liveFunctions.addUsing(usingEating)
   living = Namespace("Living")
+  
   liveFunctions.addNamespace(living)
   live = Iface("Live")
   living.addInterface(live)
@@ -390,6 +398,8 @@ def createSample(rep):
   rep.addFile(wildFile)  
   wild = Cl("Wild")
   wildNamespace.addClass(wild)
+  usingBite = Using("Bite")
+  wildNamespace.addUsing(usingBite)
   wild.setExtend(animalT)
   biteT=Type("Bite")
   wild.addImplement(biteT)
@@ -473,7 +483,7 @@ def addToNamespaceUsings(name, superName, usings):
   sp = allUsings[superName]
   usi = dict()
   for u in sp:
-    usi[u.name]=u
+    usi[u]=sp[u]
   for u in usings:
     usi[u.name]=u
   allUsings[name]=usi
@@ -482,10 +492,12 @@ def addToNamespaceUsings(name, superName, usings):
 
 
 def printIds():
+  print("IDS:")
   for ID in allIds :
     print(ID)
 
 def printUsings():
+  print("USINGS:")
   for ID in allUsings.keys():
     print(ID)
     for using in allUsings[ID]:
@@ -533,7 +545,7 @@ def methRep(meths):
   return methods
 
 def ifaceRep(iface):
-  iface.strRep = "<<Interface>>;"+iface.name
+  iface.strRep = "<<Interface>>;"+iface.pathName
   attrs=attrsRep(iface.attributes)
   methods=methRep(iface.methods)
   if not (attrs is ""):
@@ -543,7 +555,7 @@ def ifaceRep(iface):
 
 def classRep(cl):
   if cl.abstract :
-    cl.strRep= "<<Abstract>>;"+cl.name
+    cl.strRep= "<<Abstract>>;"+cl.pathName
   else :
     cl.strRep = cl.name
   attrs=attrsRep(cl.attributes)
@@ -553,43 +565,57 @@ def classRep(cl):
   if not (methods is ""):
     cl.strRep += "|"+methods
 
-def setPathId(f,name):
-  
+def setPathId(f,prefName,prev):
+  isFile = False
+  print(prefName)
   if isinstance(f,Namespace):
-    prefName = name+"."+f.name+"."
-  else :
-    prefName = name
-  if prefName.startswith("."):
-    prefName = prefName[1:]
-  #print("i"+("" if name is "" else (name+"."))+f.name)
-  #print("I"+name)
-  addToNamespaceUsings(("" if name is "" else (name+"."))+f.name,name,f.usings)
-  for nspace in f.namespaces :
-    setPathId(nspace, prefName)
-   #klasy
+    f.pathName=prefName
+    addToNamespaceUsings(f.pathName ,prev,f.usings)
+    for nspace in f.namespaces:
+      setPathId(nspace, prefName+nspace.name+".", f.pathName) 
+  else:
+    isFile = True
+    f.pathName = "$File$"+f.name+"."
+    addToNamespaceUsings(f.pathName,"",f.usings)
+    for nspace in f.namespaces :
+      setPathId(nspace,nspace.name+".",f.pathName)
+
+   #klasy  
   for cl in f.classes:
+    
     cl.pathName = prefName+cl.name
     allIds[cl.pathName]=cl
     classRep(cl) 
     repV1.addClass(cl)
+    allUsings[cl.pathName] = allUsings[f.pathName]
    #interfejsy
   for iface in f.interfaces:
     iface.pathName = prefName+iface.name 
     allIds[iface.pathName]=iface
     ifaceRep(iface)
     repV1.addInterface(iface)
+    allUsings[iface.pathName] = allUsings[f.pathName]
   #structs 
   for struct in f.structs:
     struct.pathName = prefName+struct.name
     allIds[iface.pathName]=iface
     repV1.addStruct(struct)
+    allUsings[struct.pathName] = allUsings[f.pathName]
 
-def getFatherExtendIface(iface,father):
-  pass
-def getFatherImplement(cl,father):
-  pass
-def getFatherExtend(cl,father):
-  pass
+def getFather(obj,father):
+  dic = allUsings[obj.pathName]
+  print("Obj: "+obj.pathName+"\nFather: "+father)
+  for us in dic :
+    name = ""
+    if not (us is "") :
+      name = us + "."
+    print("Using: "+name)
+    print("Using+Father:"+name+father)
+    if (allIds.get(name+father)):
+      print(True)
+      return allIds[name+father].strRep
+  return "sth"
+
 
 def createOutString():
   defs=""
@@ -601,15 +627,15 @@ def createOutString():
   
   for iface in repV1.interfaces:
     for father in iface.extends:
-      defs = defs + "["+getFatherExtendIface(iface,father)+"]^-.-["+iface.strRep+"], "
+      defs = defs + "["+getFather(iface,father.name)+"]^-.-["+iface.strRep+"], "
       
   for cl in repV1.classes:
     for father in cl.implement:
-      defs = defs + "["+getFatherImplement(cl,father)+"]^-.-["+cl.strRep+"], "
+      defs = defs + "["+getFather(cl,father.name)+"]^-.-["+cl.strRep+"], "
   
   for cl in repV1.classes:
     if cl.extends :
-      defs = defs+ "["+getFatherExtend(cl,cl.extend)+"]^-["+cl.strRep+"], "
+      defs = defs+ "["+getFather(cl,cl.extends.name)+"]^-["+cl.strRep+"], "
 
   print(defs)
   defs=defs[:-2]
@@ -619,8 +645,7 @@ def createOutString():
 def createPng(rep):
   #print(rep.toStringTree())
   for f in rep.files:
-    setPathId(f,"")
-  
+    setPathId(f,"","")
   printIds()
   printUsings()
 
