@@ -16,11 +16,12 @@ def getAst():
   parser = CSharpParser(tokens)
   r = parser.compilation_unit()
   print(r.ast.toStringTree())
-  return r.ast
+  return [r.ast] # list of files
 
 def main():
-  ast = getAst()
+  astRep = getAst()
   # maciej, its your job to generate PNG here
+  ast.createPng(astRep)
 
 def sample():
   rep = ast.RepresentationV1()
