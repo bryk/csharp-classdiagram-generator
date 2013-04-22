@@ -185,8 +185,8 @@ class Method(Node):
     self.static=val
 
   def toStringTree(self,tabs=""):
-    access = self.access
-    returnType = self.returnType
+    access = self.access.toStringTree()
+    returnType = self.returnType.toStringTree()
     static = "static" if self.static else ""
     abstract = "abstract" if self.abstract else ""
     params = ""
@@ -682,8 +682,8 @@ def createOutString():
   
   
 def createPng(rep):
-  #print(rep.toStringTree())
-  for f in rep:
+  print(rep.toStringTree())
+  for f in rep.files:
     setPathId(f,"","")
   printIds()
   printUsings()
