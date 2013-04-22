@@ -9,18 +9,18 @@ import ast
 from CSharpParser import CSharpParser
 from CSharpLexer import CSharpLexer
 
-
-  
-#TODO(bryk): this is just some piece of dummy code
-def main():
+def getAst():
   char_stream = antlr3.ANTLRInputStream(sys.stdin)
   lexer = CSharpLexer(char_stream)
   tokens = antlr3.CommonTokenStream(lexer)
   parser = CSharpParser(tokens)
   r = parser.compilation_unit()
-  print(r.ast)
   print(r.ast.toStringTree())
-  return
+  return r.ast
+
+def main():
+  ast = getAst()
+  # maciej, its your job to generate PNG here
 
 def sample():
   rep = ast.RepresentationV1()
@@ -28,6 +28,5 @@ def sample():
   ast.createPngV1(rep)
 
 if __name__ == '__main__':
-  #main()
-  sample()
+  main()
 

@@ -14,17 +14,25 @@ options {
 }
 
 compilation_unit returns [ast]:
-	namespace_body {$ast = $namespace_body.ast;};
+	namespace_body[True] {
+    $ast = $namespace_body.ast
+  };
 
 namespace_declaration returns [ast]:
 	'namespace'   qualified_identifier   namespace_block   ';'? {
-    $ast = ast.Namespace($qualified_identifier.text)
+    $ast = $namespace_block.ast
+    $ast.name = $qualified_identifier.text
   };
-namespace_block:
-	'{'   namespace_body   '}' ;
-namespace_body returns [ast]:
+namespace_block returns [ast]:
+	'{'   namespace_body[False]   '}' {$ast = $namespace_body.ast} ;
+namespace_body[bGlobal] returns [ast]:
 	extern_alias_directives?   using_directives?   global_attributes?   namespace_member_declarations? {
-    $ast = $namespace_member_declarations.ast
+    if bGlobal:
+      $ast = ast.File()
+    else:
+      $ast = ast.Namespace("")
+    for decl in $namespace_member_declarations.ast:
+      decl.addToNamespace($ast)
   };
 extern_alias_directives:
 	extern_alias_directive+ ;
@@ -39,16 +47,21 @@ using_alias_directive:
 	'using'	  identifier   '='   namespace_or_type_name   ';' ;
 using_namespace_directive:
 	'using'   namespace_name   ';' ;
-namespace_member_declarations returns [ast]:
-	namespace_member_declaration+ {$ast = $namespace_member_declaration.ast};
+namespace_member_declarations returns [ast]
+@init {
+  $ast = []
+}:
+	(namespace_member_declaration {
+    $ast += [$namespace_member_declaration.ast]
+    } )+;
 namespace_member_declaration returns [ast]:
 	namespace_declaration {$ast = $namespace_declaration.ast}
-	| attributes?   modifiers?   type_declaration ;
-type_declaration:
+	| attributes?   modifiers?   type_declaration {$ast = $type_declaration.ast};
+type_declaration returns [ast]:
 	('partial') => 'partial'   (class_declaration
 								| struct_declaration
 								| interface_declaration)
-	| class_declaration
+	| class_declaration {$ast = $class_declaration.ast}
 	| struct_declaration
 	| interface_declaration
 	| enum_declaration
@@ -65,7 +78,7 @@ modifier:
 	'new' | 'public' | 'protected' | 'private' | 'internal' | 'unsafe' | 'abstract' | 'sealed' | 'static'
 	| 'readonly' | 'volatile' | 'extern' | 'virtual' | 'override';
 	
-class_member_declaration:
+class_member_declaration returns [ast]:
 	attributes?
 	m=modifiers?
 	( 'const'   type   constant_declarators   ';'
@@ -75,7 +88,10 @@ class_member_declaration:
 			   | class_declaration 
 			   | struct_declaration)
 	| interface_declaration	// 'interface'
-	| 'void'   method_declaration
+	| 'void'   md=method_declaration {
+    $ast = $md.ast
+    $ast.returnType = 'void'
+  }
 	| type ( (member_name   '(') => method_declaration
 		   | (member_name   '{') => property_declaration
 		   | (member_name   '.'   'this') => type_name '.' indexer_declaration
@@ -542,8 +558,12 @@ attribute_argument_expression:
 //	Class Section
 ///////////////////////////////////////////////////////
 
-class_declaration:
-	'class'  type_or_generic   class_base?   type_parameter_constraints_clauses?   class_body   ';'? ;
+class_declaration returns [ast]:
+	'class'  type_or_generic   class_base?   type_parameter_constraints_clauses?   class_body   ';'? {
+    $ast = ast.Cl($type_or_generic.text)
+    for mem in $class_body.ast:
+      mem.addToClass($ast)
+  };
 class_base:
 	// syntactically base class vs interface name is the same
 	//':'   class_type (','   interface_type_list)? ;
@@ -552,10 +572,16 @@ class_base:
 interface_type_list:
 	type (','   type)* ;
 
-class_body:
-	'{'   class_member_declarations?   '}' ;
-class_member_declarations:
-	class_member_declaration+ ;
+class_body returns [ast]
+@init {
+  $ast = [] 
+}:
+	'{'   class_member_declarations?   '}' {$ast = $class_member_declarations.ast};
+class_member_declarations returns [ast]
+@init {
+  $ast = [] 
+}:
+	(class_member_declaration {$ast += [$class_member_declaration.ast]})+ ;
 
 ///////////////////////////////////////////////////////
 constant_declaration:
@@ -576,10 +602,13 @@ variable_declarator:
 	type_name ('='   variable_initializer)? ;		// eg. event EventHandler IInterface.VariableName = Foo;
 
 ///////////////////////////////////////////////////////
-method_declaration:
-	method_header   method_body ;
-method_header:
-	member_name  '('   formal_parameter_list?   ')'   type_parameter_constraints_clauses? ;
+method_declaration returns [ast]:
+	method_header   method_body {$ast = $method_header.ast} ;
+method_header returns [ast]:
+	member_name  '('   formal_parameter_list?   ')'   type_parameter_constraints_clauses? {
+    $ast = ast.Method("","","")
+    $ast.name = $member_name.text 
+  };
 method_body:
 	block ;
 member_name:

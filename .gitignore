@@ -30,3 +30,6 @@ nosetests.xml
 .project
 .pydevproject
 
+# generated files
+*.png
+

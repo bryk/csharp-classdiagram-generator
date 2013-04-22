@@ -32,27 +32,37 @@ class Node:
   def toStringTree(self,tabs=""):
     '''This should be implemented in child nodes'''
     raise NotImplementedError
+
+class NamespaceMember:
+  def addToNamespace(self, ns):
+    raise NotImplementedError
+
 # dodalem 'using' ... bo plik moze miec tez using
 class File(Node):
-  def __init__(self,name):
+  def __init__(self, name='UnknownFile'):
     self.namespaces = []
     self.classes = []
     self.interfaces= []
     self.structs = []
     self.usings = []
     self.name = name
+
   def addNamespace(self,namespace):
     self.namespaces.append(namespace)
+  
   def addClass(self,cl):
     self.classes.append(cl)
+  
   def addInterface(self,iface):
     self.interfaces.append(iface)
+  
   def addStructs(self,struct):
     self.structs.append(struct)
+  
   def addUsing(self,using):
     self.usings.append(using)
      
-  def toStringTree(self,tabs=""):
+  def toStringTree(self,tabs="", name='File'):
     nses = ''
     for ns in self.namespaces:
       nses += ns.toStringTree(tabs+TAB)
@@ -68,12 +78,13 @@ class File(Node):
     interfaces = ''
     for iface in self.interfaces:
       interfaces += iface.toStringTree(tabs+TAB)
-    return '{5}File: [\n{0}{1}{2}{3}{4}{5}]\n'.format(usings,nses,classes,structs,interfaces,tabs)
+    return '{5}{6} "{7}": [\n{0}{1}{2}{3}{4}{5}]\n'.format(usings,nses,classes,structs,interfaces,tabs, name, self.name)
 
 
 class Using(Node):
   def __init__(self, name):
     self.name = name   # Oczekuje ze to bedzie mialo format : "NamespaceZewnetrzny.NamespaceSrodkowy.NamespaceWewnetrzny" itp.
+
   def toStringTree(self,tabs=""):
     return '{1}Using: [{0}]\n'.format(self.name,tabs)  
 
@@ -82,37 +93,46 @@ allIds = dict()
 allUsings = dict()
 usingDefault = Using("")
 defaultUsing = dict()
-defaultUsing[""]=usingDefault
+defaultUsing[""] = usingDefault
 allUsings[""] = defaultUsing
 
     
-class Namespace(File):
+class Namespace(File, NamespaceMember):
   def __init__(self, name):
     super(Namespace,self).__init__(name)
+  
+  def addToNamespace(self, oth):
+    oth.namespaces += [self]
+
   def toStringTree(self,tabs=""):
-    return '{2}namespace: {0}, {1}'.format(self.name, super(Namespace,self).toStringTree(tabs),tabs)
+    return super().toStringTree(tabs, 'Namespace')
 
 
 class AccessModifier(Node):
   def __init__(self):
     self.access=internal
+  
   def setPublic(self):
     self.access=public
+  
   def setProtected(self):
     self.access=protected
+  
   def setPrivate(self):
     self.access=private
+  
   def setProtectedIndernal(self):
     self.access=protinternal
+  
   def toStringTree(self,tabs=""):
     return tabs+self.access
 
 
 # to pole ma byc uzytwane jako Typ atrybutu, typ zwracany przez funkcje, albo typ parametru
-
 class Type(Node):
   def __init__(self,name):
     self.name=name
+  
   def toStringTree(self,tabs=""):
     return tabs+self.name
 
@@ -124,10 +144,12 @@ class Attr(Node):
     self.name=name
     self.typeOfAttr=typeOfAttr
     self.access=access
+  
   def toStringTree(self,tabs=""):
     access = self.access.toStringTree()
     typeOfAttr = self.typeOfAttr.toStringTree()
-    return '{3}attribute: [{0} {1} {2}]\n'.format(access,typeOfAttr,self.name,tabs)
+    return '{3}Attribute: [{0} {1} {2}]\n'.format(access,typeOfAttr,self.name,tabs)
+
 
 # parametr wystepujacy w metodzie 
 class Parameter(Node):
@@ -149,44 +171,61 @@ class Method(Node):
     self.params=[]
     self.abstract=False
     self.static=False
+
+  def addToClass(self, cl):
+    cl.methods += [self]
+
   def addParameter(self,param):
     self.params.append(param)  
+  
   def isAbstract(self,val):
     self.abstract = val
+  
   def isStatic(self,val):
     self.static=val
+
   def toStringTree(self,tabs=""):
-    access = self.access.access
-    returnType = self.returnType.toStringTree()
+    access = self.access
+    returnType = self.returnType
     static = "static" if self.static else ""
     abstract = "abstract" if self.abstract else ""
     params = ""
     for prm in self.params :
       params+=prm.toStringTree()+"; "
     params = params[:-2]
-    return '{6}function: [{0} {1} {2} {3} {4}({5})]\n'.format(access,abstract,static,returnType,self.name,params,tabs)
+    return '{6}Method: [{0} {1} {2} {3} {4}({5})]\n'.format(access,abstract,static,returnType,self.name,params,tabs)
+
 
 class Index(Method):  # struktura taka jak metody, z ta uwaga ze trzeba dac inne nawiasowanie
   def __init__(self,name,returnType,access):
     super(Index,self).__init__(name,returnType,access)
   def toStringTree(self,tabs=""):
     return '{1}index: [\n{0}{1}]'.format(super(Index,self).toStringTree(tabs+TAB),tabs)
-    
-class ClOrIface(Node):
+
+
+class ClOrIface(Node, NamespaceMember):
   def __init__(self,name):
     self.name=name
     self.methods = []
     self.attributes = []
     self.properties = []
     self.indexes = []
+  
+  def addToNamespace(self, ns):
+    ns.classes += [self]
+
   def addMethod(self,meth):     # destruktory name postaci : "~Object" parametry zwyczajne, typ zwracany o nazwie ""
     self.methods.append(meth)
+  
   def addAttribute(self,attr):
     self.attributes.append(attr)
+  
   def addProperty(self,attr):
     self.attributes.append(attr)
+  
   def addIndex(self,attr):
     self.attributes.append(attr)
+  
   def toStringTree(self,tabs=""):
     attributes = ""
     for atr in self.attributes :
@@ -206,6 +245,7 @@ class ClOrIface(Node):
     
     return '{6}ClorIface[{0}{1}\n{2}{3}{4}{5}{6}]\n'.format(tabs,self.name,attributes,methods,properties,indexes,tabs)
 
+
 class Iface(ClOrIface):
   def __init__(self,name):
     super(Iface,self).__init__(name)
@@ -221,9 +261,8 @@ class Iface(ClOrIface):
     extends=extends[:-2]
     base = super(Iface,self).toStringTree(tabs+TAB)
     return '{3}Iface[{0} {1}\n{2}{3}]\n'.format(self.name,extends,base,tabs)
-
-
     
+
 class Cl(ClOrIface):
   def __init__(self,name):
     super(Cl,self).__init__(name)
