@@ -683,7 +683,7 @@ def createOutString():
   
 def createPng(rep):
   #print(rep.toStringTree())
-  for f in rep.files:
+  for f in rep:
     setPathId(f,"","")
   printIds()
   printUsings()
