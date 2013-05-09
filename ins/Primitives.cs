@@ -1,7 +1,7 @@
 class Primitives {
-	bool isDefault = 0.Equals(val);
+	bool isDefault = null;
 	
 	void Main() {
-		isDefault = 0.Equals(val);
+		isDefault = null;
 	}
 }

@@ -28,7 +28,7 @@ internal = "internal"
 protinternal = "protected internal"
 
 TAB = "  "
-class Node:
+class Node(object):
   def toStringTree(self,tabs=""):
     '''This should be implemented in child nodes'''
     raise NotImplementedError
@@ -105,26 +105,29 @@ class Namespace(File, NamespaceMember):
     oth.namespaces += [self]
 
   def toStringTree(self,tabs=""):
-    return super().toStringTree(tabs, 'Namespace')
+    return super(Namespace, self).toStringTree(tabs, 'Namespace')
 
 
 class AccessModifier(Node):
   def __init__(self):
-    self.access=internal
+    self.access = internal
   
+  def set(self, value):
+    self.access = value
+
   def setPublic(self):
-    self.access=public
+    self.access = public
   
   def setProtected(self):
-    self.access=protected
+    self.access = protected
   
   def setPrivate(self):
-    self.access=private
+    self.access = private
   
   def setProtectedIndernal(self):
-    self.access=protinternal
+    self.access = protinternal
   
-  def toStringTree(self,tabs=""):
+  def toStringTree(self, tabs=""):
     return tabs+self.access
 
 
@@ -309,214 +312,6 @@ class Representation:
        rep+= f.toStringTree()+"\n"
     return rep
 
-def createSample(rep):
-  #rep = Representation()
-  intrn = AccessModifier()
-  publ = AccessModifier()
-  publ.setPublic()
-  priv = AccessModifier()
-  priv.setPrivate()
-  prot = AccessModifier()
-  prot.setProtected()
-  void = Type("Void")
-  
-  basicFunctions = File("BasicFunctions")
-  rep.addFile(basicFunctions)
-  
-  breathing = Namespace("Breathing")
-  basicFunctions.addNamespace(breathing)
-  
-  breath = Iface("Breath")
-  breathing.addInterface(breath)
-  lungs = Type("Lungs")
-  lungsA = Attr("lungs",lungs,priv)
-  breath.addAttribute(lungsA)
-  respire=Method("respire",void,priv)
-  breath.addMethod(respire)
-
-  eating = Namespace("Eating")
-  basicFunctions.addNamespace(eating)
-  eat = Iface("Eat")
-  eating.addInterface(eat)
-  mouth = Type("Mouth")
-  mouthA = Attr("mouth",mouth,prot)
-  energy = Type("Energy")
-  consume = Method("consume",energy,priv)
-  meal = Type("Meal")
-  food=Parameter(meal,"food")
-  consume.addParameter(food)
-  eat.addMethod(consume)
-  eat.addAttribute(mouthA)
-  body = Type("Body")
-  bodyA = Attr("body",body,prot)
-  eat.addAttribute(bodyA)
-
-  
-  liveFunctions = File("LiveFunctions")
-  rep.addFile(liveFunctions)
-  usingBreathing = Using("Breathing")
-  liveFunctions.addUsing(usingBreathing)
-  usingEating = Using("Eating")
-  liveFunctions.addUsing(usingEating)
-  living = Namespace("Living")
-  
-  liveFunctions.addNamespace(living)
-  live = Iface("Live")
-  living.addInterface(live)
-  breathT = Type("Breath")
-  eatT=Type("Eat")
-  live.addExtend(breathT)
-  live.addExtend(eatT)
-  exist=Method("exist",void,priv)
-  live.addMethod(exist)
-
-  
-  biteFile = File("Bite")
-  rep.addFile(biteFile)
-  biteNamespace = Namespace("Bite")
-  biteFile.addNamespace(biteNamespace);
-  bite = Iface("Bite")
-  biteNamespace.addInterface(bite)
-  teeth = Type("Teeth")
-  teethA = Attr("teeth",teeth,priv)
-  bite.addAttribute(teethA)
-  hurt = Type("Hurt")
-  attack=Method("attack",hurt,prot)
-  attack.isAbstract(True)
-  bite.addMethod(attack)
-
-  familiarFile = File("Familiar")
-  rep.addFile(familiarFile)
-  familiar = Iface("Familiar")
-  familarNamespace = Namespace("Familiar")
-  familiarFile.addNamespace(familarNamespace)
-  familarNamespace.addInterface(familiar)
-  cares = Method("cares",void,intrn)
-  cares.isAbstract(True)
-  familiar.addMethod(cares)
-
-  
-  
-  animalFile = File("Animal")
-  rep.addFile(animalFile)
-  usingLiving = Using("Living")
-  animalFile.addUsing(usingLiving)
-  animal = Cl("Animal")
-  animalFile.addClass(animal)
-  bone = Type("Bone")
-  boneA = Attr("bone",bone,publ)
-  animal.addAttribute(boneA)
-  liveT = Type("Live")
-  animal.addImplement(liveT)
-  move = Method("move",void,prot)
-  animal.addMethod(move)
-  animal.isAbstract(True)
-
-  
-  petFile = File("Pet")
-  petNamespace = Namespace("Pet")
-  familiarNT = Using("Familiar")
-  petNamespace.addUsing(familiarNT)
-  petFile.addNamespace(petNamespace)
-  rep.addFile(petFile)
-  animalT = Type("Animal")
-  
-  pet = Cl("Pet")
-  petNamespace.addClass(pet)
-  pet.setExtend(animalT)
-  pet.addImplement(familiar)
-  pet.isAbstract(True)
-  friendliness = Type("Friendliness")
-  friendlinessA = Attr("friendliness",friendliness,publ)
-  pet.addMethod(cares)
-  pet.addAttribute(friendlinessA)
-
-  wildFile = File("Wild")
-  wildNamespace=Namespace("Wild")
-  wildFile.addNamespace(wildNamespace)
-  rep.addFile(wildFile)  
-  wild = Cl("Wild")
-  wildNamespace.addClass(wild)
-  usingBite = Using("Bite")
-  wildNamespace.addUsing(usingBite)
-  wild.setExtend(animalT)
-  biteT=Type("Bite")
-  wild.addImplement(biteT)
-  wild.isAbstract(True)
-  wildness = Type("Wildness")
-  wildnessA = Attr("wildness",wildness,publ)
-  wild.addAttribute(wildnessA)
-  wild.addMethod(attack)
-
-  dogFile = File("Dog")
-  rep.addFile(dogFile)
-  usingPet = Using("Pet")
-  dogFile.addUsing(usingPet)
-  dog = Cl("Dog")
-  dogFile.addClass(dog)
-  petT= Type("Pet")
-  dog.setExtend(petT)
-  caresImpl = Method("cares",void,intrn)
-  dog.addMethod(caresImpl)
-  huntCat = Method("huntCat", void, prot)
-  catT = Type("Cat")
-  catP=Parameter(catT,"cat")
-  huntCat.addParameter(catP)
-  energyT = Type("Energy")
-  energyP=Parameter(energyT,"energy")
-  huntCat.addParameter(energyP)
-  dog.addMethod(huntCat)
-
-  catFile = File("Cat")
-  rep.addFile(catFile)
-  usingPetC = Using("Pet")
-  catFile.addUsing(usingPetC)
-  cat = Cl("Cat")
-  catFile.addClass(cat)
-  cat.setExtend(petT)
-  cat.addMethod(caresImpl)
-  mouw = Method("mouw",void,prot)
-  cat.addMethod(mouw)
-
-  cowFile = File("Cow")
-  rep.addFile(cowFile)
-  usingPetCow = Using("Pet")
-  cowFile.addUsing(usingPetCow)  
-  cow = Cl("Cow")
-  cowFile.addClass(cow)
-  cow.setExtend(petT)
-  milk = Type("Milk")
-  milkA = Attr("milk",milk,intrn)
-  cow.addAttribute(milkA)
-  cow.addMethod(caresImpl)
-  giveMilk = Method("giveMilk",milk,publ)
-  cow.addMethod(giveMilk)
-
-  tigerFile = File("Tiger")
-  rep.addFile(tigerFile)
-  usingWild = Using("Wild")
-  tigerFile.addUsing(usingWild)
-  tiger = Cl("Tiger")
-  tigerFile.addClass(tiger)
-  wildT = Type("Wild")
-  tiger.setExtend(wildT)
-  stripe = Type("Stripe")
-  stripeA = Attr("stripe",stripe,prot)
-  tiger.addAttribute(stripeA)
-  attackImpl = Method("attack",hurt,prot)
-  tiger.addMethod(attackImpl)
-
-  lionFile = File("Lion")
-  rep.addFile(lionFile)
-  lionFile.addUsing(usingWild)
-  lion = Cl("Lion")
-  lionFile.addClass(lion)
-  lion.setExtend(wild)
-  mane = Type("Mane")
-  maneA = Attr("mane",mane,prot)
-  lion.addAttribute(maneA)
-  lion.addMethod(attackImpl)
-
 
 def addToNamespaceUsings(name, superName, usings):
   sp = allUsings[superName]
@@ -526,9 +321,6 @@ def addToNamespaceUsings(name, superName, usings):
   for u in usings:
     usi[u.name]=u
   allUsings[name]=usi
-
-
-
 
 def printIds():
   print("IDS:")
@@ -803,9 +595,6 @@ def createPngX(rep):
   print(defs)
   os.system("suml --png \""+defs+"\" > pngs/"+pngName+".png")
 
-
-
-    
 def createSampleV1(rep):
   #rep = Representation()
   intrn = AccessModifier()
@@ -1048,3 +837,4 @@ def createPngV1(rep):
   defs=defs[:-2]
   print(defs)
   os.system("suml --png \""+defs+"\" > pngs/"+pngName+".png")
+

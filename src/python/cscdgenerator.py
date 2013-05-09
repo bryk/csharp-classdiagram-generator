@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os
 import sys
 import antlr3
 import antlr3.tree
@@ -15,9 +14,6 @@ def getAst():
   tokens = antlr3.CommonTokenStream(lexer)
   parser = CSharpParser(tokens)
   r = parser.compilation_unit()
-  print(r.ast.toStringTree())
-  
-
   return r.ast 
 
 def main():
@@ -26,11 +22,6 @@ def main():
   rep.addFile(astRep)
   ast.createPng(rep)
 
-def sample():
-  rep = ast.Representation()
-  ast.createSample(rep)
-  ast.createPng(rep)
-
 if __name__ == '__main__':
-  #main()
-  sample()
+  main()
+

@@ -26,34 +26,29 @@ namespace_declaration returns [ast]:
 namespace_block returns [ast]:
 	'{'   namespace_body[False]   '}' {$ast = $namespace_body.ast} ;
 namespace_body[bGlobal] returns [ast]:
-	extern_alias_directives?   using_directives?   global_attributes?   namespace_member_declarations? {
+	extern_alias_directives?   using_directives?   global_attributes?   ns=namespace_member_declarations? {
     if bGlobal:
       $ast = ast.File()
     else:
       $ast = ast.Namespace("")
-    for decl in $namespace_member_declarations.ast:
-      decl.addToNamespace($ast)
+    if $ns.ast:
+      for decl in $ns.ast:
+        decl.addToNamespace($ast)
   };
-extern_alias_directives:
-	extern_alias_directive+ ;
-extern_alias_directive:
-	'extern'   'alias'   identifier  ';' ;
-using_directives:
-	using_directive+ ;
-using_directive:
-	(using_alias_directive
-	| using_namespace_directive) ;
-using_alias_directive:
-	'using'	  identifier   '='   namespace_or_type_name   ';' ;
-using_namespace_directive:
-	'using'   namespace_name   ';' ;
+extern_alias_directives: extern_alias_directive+ ;
+extern_alias_directive: 'extern'   'alias'   identifier  ';' ;
+using_directives: using_directive+ ;
+using_directive: (using_alias_directive | using_namespace_directive) ;
+using_alias_directive: 'using'	  identifier   '='   namespace_or_type_name   ';' ;
+using_namespace_directive: 'using'   namespace_name   ';' ;
 namespace_member_declarations returns [ast]
 @init {
   $ast = []
 }:
-	(namespace_member_declaration {
-    $ast += [$namespace_member_declaration.ast]
-    } )+;
+	(ns=namespace_member_declaration {
+    if $ns.ast:
+      $ast += [$ns.ast]
+    })+;
 namespace_member_declaration returns [ast]:
 	namespace_declaration {$ast = $namespace_declaration.ast}
 	| attributes?   modifiers?   type_declaration {$ast = $type_declaration.ast};
@@ -63,7 +58,7 @@ type_declaration returns [ast]:
 								| interface_declaration)
 	| class_declaration {$ast = $class_declaration.ast}
 	| struct_declaration
-	| interface_declaration
+	| iface=interface_declaration {$ast = $iface.ast}
 	| enum_declaration
 	| delegate_declaration ;
 // Identifiers
@@ -72,13 +67,35 @@ qualified_identifier:
 namespace_name
 	: namespace_or_type_name ;
 
-modifiers:
-	modifier+ ;
-modifier: 
-	'new' | 'public' | 'protected' | 'private' | 'internal' | 'unsafe' | 'abstract' | 'sealed' | 'static'
+modifiers returns [ast]
+@init {
+  $ast = ast.AccessModifier() 
+}:
+	(modifier { 
+    if $modifier.ast:
+      $ast = $modifier.ast
+  })+ ;
+modifier returns [ast]
+@init {
+  $ast = None
+}: 
+	'new' | 'public' {
+    $ast = ast.AccessModifier()
+    $ast.setPublic()
+  } | 'protected' {
+    $ast = ast.AccessModifier()
+    $ast.setProtected()
+  } | 'private' {
+    $ast = ast.AccessModifier()
+    $ast.setPrivate()
+  }
+  | 'internal' | 'unsafe' | 'abstract' | 'sealed' | 'static'
 	| 'readonly' | 'volatile' | 'extern' | 'virtual' | 'override';
 	
-class_member_declaration returns [ast]:
+class_member_declaration returns [ast]
+@init {
+  $ast = None 
+}:
 	attributes?
 	m=modifiers?
 	( 'const'   type   constant_declarators   ';'
@@ -90,7 +107,8 @@ class_member_declaration returns [ast]:
 	| interface_declaration	// 'interface'
 	| 'void'   md=method_declaration {
     $ast = $md.ast
-    $ast.returnType = 'void'
+    $ast.returnType = ast.Type('void')
+    $ast.access = $m.ast if $m.ast else ast.AccessModifier() 
   }
 	| type ( (member_name   '(') => method_declaration
 		   | (member_name   '{') => property_declaration
@@ -576,12 +594,15 @@ class_body returns [ast]
 @init {
   $ast = [] 
 }:
-	'{'   class_member_declarations?   '}' {$ast = $class_member_declarations.ast};
+	'{' (class_member_declarations {$ast = $class_member_declarations.ast})? '}';
 class_member_declarations returns [ast]
 @init {
   $ast = [] 
 }:
-	(class_member_declaration {$ast += [$class_member_declaration.ast]})+ ;
+	(cm=class_member_declaration {
+    if $cm.ast: 
+      $ast += [$cm.ast]
+  })+ ;
 
 ///////////////////////////////////////////////////////
 constant_declaration:
@@ -725,18 +746,31 @@ parameter_array:
 	'params'   type   identifier ;
 
 ///////////////////////////////////////////////////////
-interface_declaration:
+interface_declaration returns [ast]:
 	'interface'   identifier   variant_generic_parameter_list? 
-    	interface_base?   type_parameter_constraints_clauses?   interface_body   ';'? ;
+    	interface_base?   type_parameter_constraints_clauses?   interface_body   ';'? {
+    $ast = ast.Iface($identifier.text)
+    for mem in $interface_body.ast:
+      mem.addToClass($ast)
+  };
 interface_modifiers: 
 	modifier+ ;
 interface_base: 
    	':' interface_type_list ;
-interface_body:
-	'{'   interface_member_declarations?   '}' ;
-interface_member_declarations:
-	interface_member_declaration+ ;
-interface_member_declaration:
+interface_body returns [ast]
+@init {
+  $ast = [] 
+}:
+	'{'   (d=interface_member_declarations{$ast = $d.ast})?   '}' ;
+interface_member_declarations returns [ast]
+@init {
+  $ast = [] 
+}:
+	(mem=interface_member_declaration {
+    if $mem.ast:
+      $ast += [$mem.ast]
+  })+ ;
+interface_member_declaration returns [ast]:
 	attributes?    modifiers?
 		('void'   interface_method_declaration
 		| interface_event_declaration

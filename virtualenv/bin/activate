@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelavent variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/piotr/studia/6sem/tk2/repo/csharp-classdiagram-generator/virtualenv"
+VIRTUAL_ENV="virtualenv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
