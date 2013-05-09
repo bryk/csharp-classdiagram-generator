@@ -110,7 +110,11 @@ class_member_declaration returns [ast]
     $ast.returnType = ast.Type('void')
     $ast.access = $m.ast if $m.ast else ast.AccessModifier() 
   }
-	| type ( (member_name   '(') => method_declaration
+	| t=type ( (member_name   '(') => md=method_declaration {
+          $ast = $md.ast
+          $ast.returnType = $t.ast
+          $ast.access = $m.ast if $m.ast else ast.AccessModifier()
+        }
 		   | (member_name   '{') => property_declaration
 		   | (member_name   '.'   'this') => type_name '.' indexer_declaration
 		   | indexer_declaration	//this
@@ -352,7 +356,10 @@ generic_argument_list:
 type_arguments: 
 	type (',' type)* ;
 
-type:
+type returns [ast]
+@init {
+  $ast = ast.Type('unknown :(') 
+}:
 	  ((predefined_type | type_name)  rank_specifiers) => (predefined_type | type_name)   rank_specifiers   '*'*
 	| ((predefined_type | type_name)  ('*'+ | '?')) => (predefined_type | type_name)   ('*'+ | '?')
 	| (predefined_type | type_name)
@@ -1296,7 +1303,6 @@ Sign:
 fragment
 Real_type_suffix:
 	'F' | 'f' | 'D' | 'd' | 'M' | 'm' ;	
-	
 // Testing rules - so you can just use one file with a list of items
 assignment_list:
 	(assignment ';')+ ;
@@ -1326,4 +1332,6 @@ non_assignment_expression_list:
 	(non_assignment_expression ';')+ ;
 method_declarations:
 	(modifiers? ('void' | type) method_declaration)+ ;
+
+OTH  : . {$channel=HIDDEN;};
 

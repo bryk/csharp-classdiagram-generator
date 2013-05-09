@@ -8,19 +8,30 @@ import ast
 from CSharpParser import CSharpParser
 from CSharpLexer import CSharpLexer
 
-def getAst():
-  char_stream = antlr3.ANTLRInputStream(sys.stdin)
-  lexer = CSharpLexer(char_stream)
-  tokens = antlr3.CommonTokenStream(lexer)
-  parser = CSharpParser(tokens)
-  r = parser.compilation_unit()
-  return r.ast 
+def getAsts(files):
+  asts = []
+  for name in files:
+    char_stream = antlr3.ANTLRFileStream(name)
+    lexer = CSharpLexer(char_stream)
+    tokens = antlr3.CommonTokenStream(lexer)
+    parser = CSharpParser(tokens)
+    r = parser.compilation_unit()
+    r.ast.name = name
+    asts += [r.ast]
+  return asts
+
+def usage():
+  print('{0} [file1] [file2] ...\n'.format(sys.argv[0]))
 
 def main():
-  astRep = getAst()
-  rep = ast.Representation()
-  rep.addFile(astRep)
-  ast.createPng(rep)
+  if not sys.argv[1:]:
+    usage()
+  else:
+    asts = getAsts(sys.argv[1:])
+    #TODO(maciej): uncomment the below code
+    #rep = ast.Representation()
+    #rep.addFile(astRep)
+    #ast.createPng(rep)
 
 if __name__ == '__main__':
   main()

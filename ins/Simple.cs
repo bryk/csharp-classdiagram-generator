@@ -1,4 +1,6 @@
- namespace Aa {
+// xXXXX
+//
+namespace Aa {
   class Cast {
     public void Main() {
       object key = newElement;
