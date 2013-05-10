@@ -4,6 +4,7 @@ import sys
 import antlr3
 import antlr3.tree
 import ast
+import pngcreator
 
 from CSharpParser import CSharpParser
 from CSharpLexer import CSharpLexer
@@ -28,10 +29,13 @@ def main():
     usage()
   else:
     asts = getAsts(sys.argv[1:])
+
     #TODO(maciej): uncomment the below code
-    #rep = ast.Representation()
-    #rep.addFile(astRep)
-    #ast.createPng(rep)
+    rep = ast.Representation()
+    for a in asts:
+      rep.addFile(a)
+      print(a.toStringTree())
+    pngcreator.createPng(rep)
 
 if __name__ == '__main__':
   main()
