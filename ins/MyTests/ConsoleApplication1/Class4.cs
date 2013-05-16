@@ -5,8 +5,10 @@ using System.Text;
 
 namespace ConsoleApplication1
 {
-    class Class1
+    namespace Inner1
     {
-        abstract void setState(string[] s);
+        class Class4: Class3
+        {
+        }
     }
 }

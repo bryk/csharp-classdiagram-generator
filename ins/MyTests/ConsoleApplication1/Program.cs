@@ -5,8 +5,10 @@ using System.Text;
 
 namespace ConsoleApplication1
 {
-    class Class1
+    class Program
     {
-        abstract void setState(string[] s);
+        static void Main(string[] args)
+        {
+        }
     }
 }

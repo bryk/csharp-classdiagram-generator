@@ -5,8 +5,7 @@ using System.Text;
 
 namespace ConsoleApplication1
 {
-    class Class1
+    class Class8:Inner12.Class7
     {
-        abstract void setState(string[] s);
     }
 }

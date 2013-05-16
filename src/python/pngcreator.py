@@ -15,7 +15,7 @@ class RepresentationV1:
     
 repV1 = RepresentationV1()
 
-debugMode = False
+debugMode = True
 allIds = dict()
 allUsings = dict()
 usingDefault = Using("")
@@ -31,14 +31,19 @@ protinternal = "protected internal"
 
 TAB = "  "
 
-def addToNamespaceUsings(name, superName, usings):
+def addToNamespaceUsings(name, superName, usings, trailingNamespaces):
   sp = allUsings[superName]
   usi = dict()
   for u in sp:
     usi[u]=sp[u]
   for u in usings:
     usi[u.name]=u
+    for w in trailingNamespaces:
+      usi[w+u.name]=Using(w+u.name)
+  
+  usi[name[:-1]]=Using(name[:-1])
   allUsings[name]=usi
+  
   if debugMode:
     print("Usings: "+name)
     for u in allUsings[name]:
@@ -113,7 +118,7 @@ def classRep(cl):
   if cl.abstract :
     cl.strRep= "<<Abstract>>;"+cl.pathName
   else :
-    cl.strRep = cl.name
+    cl.strRep = cl.pathName
   attrs=attrsRep(cl.attributes)
   methods=methRep(cl.methods)
   if not (attrs == ""):
@@ -121,21 +126,25 @@ def classRep(cl):
   if not (methods == ""):
     cl.strRep += "|"+methods
 
-def setPathId(f,prefName,prev):
+def setPathId(f,prefName,prev,trailingNamespaces):
   isFile = False
+  newTrailingNamespaces = set()
+  for u in trailingNamespaces:
+      newTrailingNamespaces.add(u)
   if debugMode:
     print(prefName)
   if isinstance(f,Namespace):
     f.pathName=prefName
-    addToNamespaceUsings(f.pathName ,prev,f.usings)
+    newTrailingNamespaces.add(f.pathName)
+    addToNamespaceUsings(f.pathName ,prev,f.usings,newTrailingNamespaces)
     for nspace in f.namespaces:
-      setPathId(nspace, prefName+nspace.name+".", f.pathName) 
+      setPathId(nspace, prefName+nspace.name+".", f.pathName,newTrailingNamespaces) 
   else:
     isFile = True
     f.pathName = "$File$"+f.name+"."
-    addToNamespaceUsings(f.pathName,"",f.usings)
+    addToNamespaceUsings(f.pathName,"",f.usings,trailingNamespaces)
     for nspace in f.namespaces :
-      setPathId(nspace,nspace.name+".",f.pathName)
+      setPathId(nspace,nspace.name+".",f.pathName,trailingNamespaces)
 
    #klasy  
   for cl in f.classes:
@@ -207,7 +216,7 @@ def createPng(rep):
   if debugMode:
     print(rep.toStringTree())
   for f in rep.files:
-    setPathId(f,"","")
+    setPathId(f,"","",set())
   if debugMode:
     printIds()
     printUsings()

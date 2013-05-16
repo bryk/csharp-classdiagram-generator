@@ -11,7 +11,7 @@ namespace AutoMapper.Internal
 
     public interface IProxyGeneratorFactory
     {
-        IProxyGenerator Create();
+        IProxyGenerator[] Create();
     }
 
     public interface ILazy<T>

@@ -5,6 +5,7 @@ import antlr3
 import antlr3.tree
 import ast
 import pngcreator
+import sampleast
 
 from CSharpParser import CSharpParser
 from CSharpLexer import CSharpLexer
@@ -33,6 +34,7 @@ def main():
     for a in asts:
       rep.addFile(a)
       print(a.toStringTree())
+    #sampleast.createSampleV2(rep)
     pngcreator.createPng(rep)
 
 if __name__ == '__main__':

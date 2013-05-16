@@ -5,8 +5,13 @@ using System.Text;
 
 namespace ConsoleApplication1
 {
-    class Class1
+    namespace Inner15
     {
-        abstract void setState(string[] s);
+        namespace Inner16
+        {
+            class Class9
+            {
+            }
+        }
     }
 }
