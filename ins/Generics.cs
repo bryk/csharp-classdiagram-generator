@@ -1,6 +1,6 @@
 class Generics {
 	
-	static Dictionary<string[], List<FxCopCategory>> ruleDict = new Dictionary<string[], List<FxCopCategory>>(new ArrayHashCodeProvider());
+	static Dictionary<string, List<FxCopCategory>> ruleDict = new Dictionary<string, List<FxCopCategory>>(new ArrayHashCodeProvider());
 	
 	public Action<List<FxCopCategory>> callback;
 	

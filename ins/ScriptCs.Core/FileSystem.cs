@@ -36,7 +36,7 @@ namespace ScriptCs
             return File.ReadAllText(path);
         }
 
-        public string[] ReadFileLines(string path)
+        public string ReadFileLines(string path)
         {
             return File.ReadAllLines(path);
         }

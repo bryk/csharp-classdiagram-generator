@@ -16,7 +16,6 @@ class RepresentationV1:
 repV1 = RepresentationV1()
 
 debugMode = False
-
 allIds = dict()
 allUsings = dict()
 usingDefault = Using("")
@@ -40,7 +39,12 @@ def addToNamespaceUsings(name, superName, usings):
   for u in usings:
     usi[u.name]=u
   allUsings[name]=usi
-
+  if debugMode:
+    print("Usings: "+name)
+    for u in allUsings[name]:
+      print(u)
+    print("End usings")
+  
 def printIds():
   print("IDS:")
   for ID in allIds :
@@ -71,6 +75,8 @@ def methRep(meths):
   methods=";"
   for method  in meths:
     meth=""
+    if method.isStatic():
+      meth+="static "
     if method.isAbstract():
       meth+="~"
     if method.modifiers.access == public:
@@ -319,6 +325,7 @@ def createPngX(rep):
       defs = defs+ "["+cl.extends.strRep+"]^-["+cl.strRep+"], "
   print(defs)
   defs=defs[:-2]
+  print("defs")
   print(defs)
   os.system("suml --png \""+defs+"\" > pngs/"+pngName+".png")
 
@@ -431,6 +438,7 @@ def createPngV1(rep):
   print(defs)
   defs=defs[:-2]
   print(defs)
+  
   os.system("suml --png \""+defs+"\" > pngs/"+pngName+".png")
 
 

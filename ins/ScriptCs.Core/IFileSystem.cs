@@ -18,7 +18,7 @@ namespace ScriptCs
 
         string ReadFile(string path);
 
-        string[] ReadFileLines(string path);
+        string ReadFileLines(string path);
 
         DateTime GetLastWriteTime(string file);
         
