@@ -2,12 +2,12 @@ import ast
 
 def createSample(rep):
   #rep = Representation()
-  intrn = ast.AccessModifier()
-  publ = ast.AccessModifier()
+  intrn = ast.Modifier()
+  publ = ast.Modifier()
   publ.setPublic()
-  priv = ast.AccessModifier()
+  priv = ast.Modifier()
   priv.setPrivate()
-  prot = ast.AccessModifier()
+  prot = ast.Modifier()
   prot.setProtected()
   void = ast.Type("Void")
   
@@ -209,12 +209,12 @@ def createSample(rep):
 
 def createSampleV1(rep):
   #rep = Representation()
-  intrn = AccessModifier()
-  publ = AccessModifier()
+  intrn = Modifier()
+  publ = Modifier()
   publ.setPublic()
-  priv = AccessModifier()
+  priv = Modifier()
   priv.setPrivate()
-  prot = AccessModifier()
+  prot = Modifier()
   prot.setProtected()
   void = Type("Void")
   

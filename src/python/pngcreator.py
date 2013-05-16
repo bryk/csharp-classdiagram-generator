@@ -57,11 +57,11 @@ def printUsings():
 def attrsRep(attributes):
   attrs=";"
   for attr in attributes:
-    if attr.access.access is public:
+    if attr.access.access == public:
       attrs+="+"
-    elif attr.access.access is private:
+    elif attr.access.access == private:
       attrs+="-"
-    elif attr.access.access is protected:
+    elif attr.access.access == protected:
       attrs+="#"
     attrs+=attr.name + " : " + attr.typeOfAttr.name+";"
   attrs = attrs[1:-1]   
@@ -71,13 +71,13 @@ def methRep(meths):
   methods=";"
   for method  in meths:
     meth=""
-    if method.abstract :
+    if method.isAbstract():
       meth+="~"
-    if method.access.access is public:
+    if method.modifiers.access == public:
       meth+="+"
-    elif method.access.access is private:
+    elif method.modifiers.access == private:
       meth+="-"
-    elif method.access.access is protected:
+    elif method.modifiers.access == protected:
       meth+="#"
     meth+=method.name + "("
     
@@ -98,9 +98,9 @@ def ifaceRep(iface):
   iface.strRep = "<<Interface>>;"+iface.pathName
   attrs=attrsRep(iface.attributes)
   methods=methRep(iface.methods)
-  if not (attrs is ""):
+  if not (attrs == ""):
     iface.strRep += "|"+attrs
-  if not (methods is ""):
+  if not (methods == ""):
     iface.strRep += "|"+methods
 
 def classRep(cl):
@@ -110,9 +110,9 @@ def classRep(cl):
     cl.strRep = cl.name
   attrs=attrsRep(cl.attributes)
   methods=methRep(cl.methods)
-  if not (attrs is ""):
+  if not (attrs == ""):
     cl.strRep += "|"+attrs
-  if not (methods is ""):
+  if not (methods == ""):
     cl.strRep += "|"+methods
 
 def setPathId(f,prefName,prev):
@@ -159,7 +159,7 @@ def getFather(obj,father):
     print("Obj: "+obj.pathName+"\nFather: "+father)
   for us in dic :
     name = ""
-    if not (us is "") :
+    if not (us == "") :
       name = us + "."
     if debugMode:
       print("Using: "+name)
@@ -220,15 +220,15 @@ def createPngX(rep):
     iface.strRep = "<<Interface>>;"+iface.name
     attrs=";"
     for attr in iface.attributes:
-      if attr.access.access is public:
+      if attr.access.access == public:
         attrs+="+"
-      elif attr.access.access is private:
+      elif attr.access.access == private:
         attrs+="-"
-      elif attr.access.access is protected:
+      elif attr.access.access == protected:
         attrs+="#"
       attrs+=attr.name + " : " + attr.typeOfAttr.name+";"
     attrs = attrs[1:-1] 
-    if not (attrs is ""):
+    if not (attrs == ""):
       iface.strRep += "|"+attrs
     
     methods=";"
@@ -236,11 +236,11 @@ def createPngX(rep):
       meth=""
       if method.abstract :
         meth+="~"
-      if method.access.access is public:
+      if method.access.access == public:
         meth+="+"
-      elif method.access.access is private:
+      elif method.access.access == private:
         meth+="-"
-      elif method.access.access is protected:
+      elif method.access.access == protected:
         meth+="#"
       meth+=method.name + "("
       
@@ -255,7 +255,7 @@ def createPngX(rep):
       methods+=meth+";"
       
     methods=methods[1:-1]
-    if not (methods is ""):
+    if not (methods == ""):
       iface.strRep += "|"+methods
     
   for cl in rep.classes:
@@ -265,27 +265,27 @@ def createPngX(rep):
       cl.strRep = cl.name
     attrs=";"
     for attr in cl.attributes:
-      if attr.access.access is public:
+      if attr.access.access == public:
         attrs+="+"
-      elif attr.access.access is private:
+      elif attr.access.access == private:
         attrs+="-"
-      elif attr.access.access is protected:
+      elif attr.access.access == protected:
         attrs+="#"
       
       attrs+=attr.name + " : " + attr.typeOfAttr.name+";"
     attrs = attrs[1:-1]
-    if not (attrs is ""):
+    if not (attrs == ""):
       cl.strRep += "|"+attrs
     methods=";"
     for method  in cl.methods:
       meth=""
       if method.abstract :
         meth+="~"
-      if method.access.access is public:
+      if method.access.access == public:
         meth+="+"
-      elif method.access.access is private:
+      elif method.access.access == private:
         meth+="-"
-      elif method.access.access is protected:
+      elif method.access.access == protected:
         meth+="#"
       meth+=method.name + "("
       
@@ -300,7 +300,7 @@ def createPngX(rep):
       methods+=meth+";"
       
     methods=methods[1:-1]
-    if not (methods is ""):
+    if not (methods == ""):
       cl.strRep += "|"+methods
     
     
@@ -331,15 +331,15 @@ def createPngV1(rep):
     iface.strRep = "<<Interface>>;"+iface.name
     attrs=";"
     for attr in iface.attributes:
-      if attr.access.access is public:
+      if attr.access.access == public:
         attrs+="+"
-      elif attr.access.access is private:
+      elif attr.access.access == private:
         attrs+="-"
-      elif attr.access.access is protected:
+      elif attr.access.access == protected:
         attrs+="#"
       attrs+=attr.name + " : " + attr.typeOfAttr.name+";"
     attrs = attrs[1:-1] 
-    if not (attrs is ""):
+    if not (attrs == ""):
       iface.strRep += "|"+attrs
     
     methods=";"
@@ -347,11 +347,11 @@ def createPngV1(rep):
       meth=""
       if method.abstract :
         meth+="~"
-      if method.access.access is public:
+      if method.access.access == public:
         meth+="+"
-      elif method.access.access is private:
+      elif method.access.access == private:
         meth+="-"
-      elif method.access.access is protected:
+      elif method.access.access == protected:
         meth+="#"
       meth+=method.name + "("
       
@@ -366,7 +366,7 @@ def createPngV1(rep):
       methods+=meth+";"
       
     methods=methods[1:-1]
-    if not (methods is ""):
+    if not (methods == ""):
       iface.strRep += "|"+methods
     
   for cl in rep.classes:
@@ -376,27 +376,27 @@ def createPngV1(rep):
       cl.strRep = cl.name
     attrs=";"
     for attr in cl.attributes:
-      if attr.access.access is public:
+      if attr.access.access == public:
         attrs+="+"
-      elif attr.access.access is private:
+      elif attr.access.access == private:
         attrs+="-"
-      elif attr.access.access is protected:
+      elif attr.access.access == protected:
         attrs+="#"
       
       attrs+=attr.name + " : " + attr.typeOfAttr.name+";"
     attrs = attrs[1:-1]
-    if not (attrs is ""):
+    if not (attrs == ""):
       cl.strRep += "|"+attrs
     methods=";"
     for method  in cl.methods:
       meth=""
       if method.abstract :
         meth+="~"
-      if method.access.access is public:
+      if method.access.access == public:
         meth+="+"
-      elif method.access.access is private:
+      elif method.access.access == private:
         meth+="-"
-      elif method.access.access is protected:
+      elif method.access.access == protected:
         meth+="#"
       meth+=method.name + "("
       
@@ -411,7 +411,7 @@ def createPngV1(rep):
       methods+=meth+";"
       
     methods=methods[1:-1]
-    if not (methods is ""):
+    if not (methods == ""):
       cl.strRep += "|"+methods
     
     

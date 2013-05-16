@@ -18,7 +18,7 @@ namespace ScriptCs.Package
             _fileSystem = fileSystem;
         }
 
-        public IEnumerable<string> CreatePackageFile()
+        public abstract IEnumerable<string> CreatePackageFile<string>()
         {
             var packagesFile = Path.Combine(_fileSystem.CurrentDirectory, Constants.PackagesFile);
             var packageReferenceFile = new PackageReferenceFile(packagesFile);

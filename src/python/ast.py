@@ -6,9 +6,6 @@ pngName = "name"
 
 
 
-###
-# AccessModifier.name moze miec tylko jedna z czterech wartosci
-###
 public = "public"
 protected = "protected"
 private = "private"
@@ -90,27 +87,28 @@ class Namespace(File, NamespaceMember):
     return super(Namespace, self).toStringTree(tabs, 'Namespace')
 
 
-class AccessModifier(Node):
+class Modifier(Node):
   def __init__(self):
     self.access = internal
+    self.static = False
+    self.abstract = False
   
-  def set(self, value):
-    self.access = value
+  def parseFromString(self, s):
+    if s == 'static':
+      self.static = True
+    if s == 'abstract':
+      self.abstract = True
+    if s in (public, protected, private, protinternal):
+      self.access = s
+    
+  def isStatic(self):
+    return self.static
 
-  def setPublic(self):
-    self.access = public
-  
-  def setProtected(self):
-    self.access = protected
-  
-  def setPrivate(self):
-    self.access = private
-  
-  def setProtectedIndernal(self):
-    self.access = protinternal
+  def isAbstract(self):
+    return self.abstract
   
   def toStringTree(self, tabs=""):
-    return tabs+self.access
+    return tabs + self.access + (" static" if self.static else "") + (" abstract" if self.abstract else "")
 
 
 # to pole ma byc uzytwane jako Typ atrybutu, typ zwracany przez funkcje, albo typ parametru
@@ -149,36 +147,38 @@ class Parameter(Node):
 # return type ma miec typ "Type"
 # parametry maja typu Parameter
 class Method(Node):
-  def __init__(self,name,returnType,access):
-    self.name=name
-    self.returnType=returnType
-    self.access=access
-    self.params=[]
-    self.abstract=False
-    self.static=False
+  def __init__(self):
+    self.name = None
+    self.returnType = None
+    self.modifiers = None
+    self.params = []
 
   def addToClass(self, cl):
     cl.methods += [self]
 
-  def addParameter(self,param):
+  def addParameter(self, param):
     self.params.append(param)  
   
-  def isAbstract(self,val):
-    self.abstract = val
-  
-  def isStatic(self,val):
-    self.static=val
+  def setModifiers(self, mods):
+    self.modifiers = mods
 
-  def toStringTree(self,tabs=""):
-    access = self.access.toStringTree()
+  def setReturnType(self, ret):
+    self.returnType = ret
+
+  def isStatic(self):
+    return self.modifiers.isStatic()
+
+  def isAbstract(self):
+    return self.modifiers.isAbstract()
+
+  def toStringTree(self, tabs=""):
     returnType = self.returnType.toStringTree()
-    static = "static" if self.static else ""
-    abstract = "abstract" if self.abstract else ""
     params = ""
     for prm in self.params :
-      params+=prm.toStringTree()+"; "
+      params += prm.toStringTree() + "; "
     params = params[:-2]
-    return '{6}Method: [{0} {1} {2} {3} {4}({5})]\n'.format(access,abstract,static,returnType,self.name,params,tabs)
+    return '{4}Method: [{0} {1} {2} ({3})]\n'.format(self.modifiers.toStringTree(),
+        returnType, self.name, params, tabs)
 
 
 class Index(Method):  # struktura taka jak metody, z ta uwaga ze trzeba dac inne nawiasowanie
@@ -189,29 +189,26 @@ class Index(Method):  # struktura taka jak metody, z ta uwaga ze trzeba dac inne
 
 
 class ClOrIface(Node, NamespaceMember):
-  def __init__(self,name):
-    self.name=name
+  def __init__(self, name):
+    self.name = name
     self.methods = []
     self.attributes = []
     self.properties = []
     self.indexes = []
   
-  def addToNamespace(self, ns):
-    ns.classes += [self]
-
-  def addMethod(self,meth):     # destruktory name postaci : "~Object" parametry zwyczajne, typ zwracany o nazwie ""
+  def addMethod(self, meth):     # destruktory name postaci : "~Object" parametry zwyczajne, typ zwracany o nazwie ""
     self.methods.append(meth)
   
-  def addAttribute(self,attr):
+  def addAttribute(self, attr):
     self.attributes.append(attr)
   
-  def addProperty(self,attr):
+  def addProperty(self, attr):
     self.attributes.append(attr)
   
-  def addIndex(self,attr):
+  def addIndex(self, attr):
     self.attributes.append(attr)
   
-  def toStringTree(self,tabs=""):
+  def toStringTree(self, tabs=""):
     attributes = ""
     for atr in self.attributes :
       attributes += atr.toStringTree(tabs+TAB) 
@@ -235,44 +232,54 @@ class Iface(ClOrIface):
   def __init__(self,name):
     super(Iface,self).__init__(name)
     self.extends = []             # list of Type
-  def addExtend(self,iface):
+  
+  def addExtend(self, iface):
     self.extends.append(iface)
-  def toStringTree(self,tabs=""):
-    extends=""
+  
+  def toStringTree(self, tabs=""):
+    extends = ""
     if len(self.extends)>0 :
       extends = "extends "
     for iface in self.extends:
       extends += iface.name+", "
-    extends=extends[:-2]
-    base = super(Iface,self).toStringTree(tabs+TAB)
-    return '{3}Iface[{0} {1}\n{2}{3}]\n'.format(self.name,extends,base,tabs)
-    
+    extends = extends[:-2]
+    base = super(Iface, self).toStringTree(tabs+TAB)
+    return '{3}Iface[{0} {1}\n{2}{3}]\n'.format(self.name, extends, base, tabs)
+ 
+  def addToNamespace(self, ns):
+    ns.interfaces += [self]
+ 
 
 class Cl(ClOrIface):
-  def __init__(self,name):
-    super(Cl,self).__init__(name)
+  def __init__(self, name):
+    super(Cl, self).__init__(name)
     self.implement = []     # list of Type
     self.extends = None     # Type
     self.abstract = False
-  def isAbstract(self,val):
-    self.abstract = val
-  def setExtend(self,cl):
+
+  def setExtend(self, cl):
     self.extends = cl
-  def addImplement(self,iface):
+  
+  def addImplement(self, iface):
     self.implement.append(iface)
+  
   def toStringTree(self, tabs =""):
     abstract = "abstract" if self.abstract else ""
-    extends=""
+    extends = ""
     if self.extends :
       extends = "extends "+ self.extends.name
-    implement=""
+    implement = ""
     if len(self.implement)>0 :
       implement = "implements "
     for iface in self.implement:
-      implement+= iface.name +", " 
-    implement=implement[:-2]  
-    base = super(Cl,self).toStringTree(tabs+TAB)
-    return '{5}class({0} {1} {2} {3} \n{4}{5})\n'.format(abstract, self.name,extends,implement,base,tabs)
+      implement += iface.name +", " 
+    implement = implement[:-2]  
+    base = super(Cl, self).toStringTree(tabs+TAB)
+    return '{5}class({0} {1} {2} {3} \n{4}{5})\n'.format(abstract, self.name, extends, implement, base, tabs)
+
+  def addToNamespace(self, ns):
+    ns.classes += [self]
+
 
 
 

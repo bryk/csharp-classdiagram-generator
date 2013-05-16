@@ -69,28 +69,17 @@ namespace_name
 
 modifiers returns [ast]
 @init {
-  $ast = ast.AccessModifier() 
+  $ast = ast.Modifier() 
 }:
 	(modifier { 
-    if $modifier.ast:
-      $ast = $modifier.ast
+    $ast.parseFromString($modifier.ast)
   })+ ;
-modifier returns [ast]
-@init {
-  $ast = None
-}: 
-	'new' | 'public' {
-    $ast = ast.AccessModifier()
-    $ast.setPublic()
-  } | 'protected' {
-    $ast = ast.AccessModifier()
-    $ast.setProtected()
-  } | 'private' {
-    $ast = ast.AccessModifier()
-    $ast.setPrivate()
-  }
-  | 'internal' | 'unsafe' | 'abstract' | 'sealed' | 'static'
-	| 'readonly' | 'volatile' | 'extern' | 'virtual' | 'override';
+modifier returns [ast]:
+	('new' | 'public' | 'protected'
+  | 'private'| 'internal' | 'unsafe' | 'abstract' | 'sealed' 
+  | 'static' | 'readonly' | 'volatile' | 'extern' | 'virtual' | 'override') {
+    $ast = $modifier.text 
+  };
 	
 class_member_declaration returns [ast]
 @init {
@@ -107,13 +96,13 @@ class_member_declaration returns [ast]
 	| interface_declaration	// 'interface'
 	| 'void'   md=method_declaration {
     $ast = $md.ast
-    $ast.returnType = ast.Type('void')
-    $ast.access = $m.ast if $m.ast else ast.AccessModifier() 
+    $ast.setReturnType(ast.Type('void'))
+    $ast.setModifiers($m.ast if $m.ast else ast.Modifier())
   }
 	| t=type ( (member_name   '(') => md=method_declaration {
           $ast = $md.ast
-          $ast.returnType = $t.ast
-          $ast.access = $m.ast if $m.ast else ast.AccessModifier()
+          $ast.setReturnType($t.ast)
+          $ast.setModifiers($m.ast if $m.ast else ast.Modifier())
         }
 		   | (member_name   '{') => property_declaration
 		   | (member_name   '.'   'this') => type_name '.' indexer_declaration
@@ -356,14 +345,11 @@ generic_argument_list:
 type_arguments: 
 	type (',' type)* ;
 
-type returns [ast]
-@init {
-  $ast = ast.Type('unknown :(') 
-}:
-	  ((predefined_type | type_name)  rank_specifiers) => (predefined_type | type_name)   rank_specifiers   '*'*
+type returns [ast]:
+	  (((predefined_type | type_name)  rank_specifiers) => (predefined_type | type_name)   rank_specifiers   '*'*
 	| ((predefined_type | type_name)  ('*'+ | '?')) => (predefined_type | type_name)   ('*'+ | '?')
 	| (predefined_type | type_name)
-	| 'void' '*'+
+	| 'void' '*'+) { $ast = ast.Type($type.text) }
 	;
 non_nullable_type:
 	(predefined_type | type_name)
@@ -631,10 +617,10 @@ variable_declarator:
 
 ///////////////////////////////////////////////////////
 method_declaration returns [ast]:
-	method_header   method_body {$ast = $method_header.ast} ;
+	method_header   method_body {$ast = $method_header.ast};
 method_header returns [ast]:
 	member_name  '('   formal_parameter_list?   ')'   type_parameter_constraints_clauses? {
-    $ast = ast.Method("","","")
+    $ast = ast.Method()
     $ast.name = $member_name.text 
   };
 method_body:
@@ -777,20 +763,36 @@ interface_member_declarations returns [ast]
     if $mem.ast:
       $ast += [$mem.ast]
   })+ ;
-interface_member_declaration returns [ast]:
-	attributes?    modifiers?
-		('void'   interface_method_declaration
+interface_member_declaration returns [ast]
+@init {
+  $ast = None
+}:
+	attributes?    m=modifiers?
+		('void'   md=interface_method_declaration {
+      $ast = $md.ast
+      $ast.setReturnType(ast.Type('void'))
+      $ast.setModifiers($m.ast if $m.ast else ast.Modifier())
+    }
 		| interface_event_declaration
-		| type   ( (member_name   '(') => interface_method_declaration
+		| type   ( (member_name   '(') => md=interface_method_declaration {
+      $ast = $md.ast
+      $ast.setReturnType($type.ast)
+      $ast.setModifiers($m.ast if $m.ast else ast.Modifier())
+    }
 		         | (member_name   '{') => interface_property_declaration 
 				 | interface_indexer_declaration)
 		) 
 		;
 interface_property_declaration: 
 	identifier   '{'   interface_accessor_declarations   '}' ;
-interface_method_declaration:
-	identifier   generic_argument_list?
-	    '('   formal_parameter_list?   ')'   type_parameter_constraints_clauses?   ';' ;
+interface_method_declaration returns [ast]:
+	identifier   gen=generic_argument_list?
+	    '('   formal_parameter_list?   ')'   type_parameter_constraints_clauses?   ';' {
+        $ast = ast.Method()
+        $ast.name = $identifier.text
+        if $gen.text:
+          $ast.name += $gen.text
+      };
 interface_event_declaration: 
 	//attributes?   'new'?   
 	'event'   type   identifier   ';' ; 

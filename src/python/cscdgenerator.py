@@ -29,8 +29,6 @@ def main():
     usage()
   else:
     asts = getAsts(sys.argv[1:])
-
-    #TODO(maciej): uncomment the below code
     rep = ast.Representation()
     for a in asts:
       rep.addFile(a)
