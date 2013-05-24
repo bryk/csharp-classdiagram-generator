@@ -9,7 +9,7 @@ namespace Aa {
     }
   }
 
-  class Second {
+  class Second : Cast {
     public void Main() {
       object key = newElement;
       object key2 = newElement is XamlObject ? true : null;

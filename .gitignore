@@ -1,3 +1,7 @@
+# generated pngs
+pngs/
+*.png
+
 # bryk's tests
 bryk.py
 

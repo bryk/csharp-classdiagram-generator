@@ -104,7 +104,11 @@ class_member_declaration returns [ast]
           $ast.setReturnType($t.ast)
           $ast.setModifiers($m.ast if $m.ast else ast.Modifier())
         }
-		   | (member_name   '{') => property_declaration
+		   | (member_name   '{') => pd=property_declaration { 
+          $ast = $pd.ast
+          $ast.setType($t.ast)
+          $ast.setModifiers($m.ast if $m.ast else ast.Modifier())
+        }
 		   | (member_name   '.'   'this') => type_name '.' indexer_declaration
 		   | indexer_declaration	//this
 	       | field_declaration      // qid
@@ -375,7 +379,7 @@ pointer_type:
 ///////////////////////////////////////////////////////
 block:
 	';'
-	| '{'   statement_list?   '}';
+	| '{' ( ~('{' | '}') | block)* '}';
 statement_list:
 	statement+ ;
 	
@@ -570,18 +574,24 @@ attribute_argument_expression:
 ///////////////////////////////////////////////////////
 
 class_declaration returns [ast]:
-	'class'  type_or_generic   class_base?   type_parameter_constraints_clauses?   class_body   ';'? {
+	'class'  type_or_generic   cb=class_base?   type_parameter_constraints_clauses?   class_body   ';'? {
     $ast = ast.Cl($type_or_generic.text)
+    if $cb.ast:
+      for typ in $cb.ast:
+        $ast.implement.append(typ)
     for mem in $class_body.ast:
       mem.addToClass($ast)
   };
-class_base:
+class_base returns [ast]:
 	// syntactically base class vs interface name is the same
 	//':'   class_type (','   interface_type_list)? ;
-	':'   interface_type_list ;
+	':'   l=interface_type_list { $ast = $l.ast };
 	
-interface_type_list:
-	type (','   type)* ;
+interface_type_list returns [ast]
+@init {
+  $ast = []
+}:
+	(t1=type {$ast.append($t1.ast)} ) (',' (t2=type {$ast.append($t2.ast)}))* ;
 
 class_body returns [ast]
 @init {
@@ -619,8 +629,12 @@ variable_declarator:
 method_declaration returns [ast]:
 	method_header   method_body {$ast = $method_header.ast};
 method_header returns [ast]:
-	member_name  '('   formal_parameter_list?   ')'   type_parameter_constraints_clauses? {
+	member_name  '('   fpl=formal_parameter_list?   ')'   type_parameter_constraints_clauses? {
     $ast = ast.Method()
+    if $fpl.ast:
+      for param in $fpl.ast:
+        if param:
+          $ast.addParameter(param)
     $ast.name = $member_name.text 
   };
 method_body:
@@ -629,8 +643,10 @@ member_name:
 	qid ;		// IInterface<int>.Method logic added.
 
 ///////////////////////////////////////////////////////
-property_declaration:
-	member_name   '{'   accessor_declarations   '}' ;
+property_declaration returns [ast]:
+	member_name   '{'   accessor_declarations   '}' {
+    $ast = ast.Property($member_name.text)
+  };
 accessor_declarations:
 	attributes?
 		(get_accessor_declaration   attributes?   set_accessor_declaration?
@@ -720,16 +736,21 @@ constructor_constraint:
 return_type:
 	type
 	|  'void';
-formal_parameter_list:
-	formal_parameter (',' formal_parameter)* ;
-formal_parameter:
-	attributes?   (fixed_parameter | parameter_array) 
+formal_parameter_list returns [ast]
+@init {
+  $ast = []
+}:
+	(f1=formal_parameter{$ast.append($f1.ast)}) (',' (f2=formal_parameter{$ast.append($f2.ast)}))* ;
+formal_parameter returns [ast]:
+	attributes?   (fp=fixed_parameter {$ast = $fp.ast} | parameter_array) 
 	| '__arglist';	// __arglist is undocumented, see google
 fixed_parameters:
 	fixed_parameter   (','   fixed_parameter)* ;
 // 4.0
-fixed_parameter:
-	parameter_modifier?   type   identifier   default_argument? ;
+fixed_parameter returns [ast]:
+	parameter_modifier?   type   identifier   default_argument? {
+    $ast = ast.Parameter($type.ast, $identifier.text)
+  };
 // 4.0
 default_argument:
 	'=' expression;

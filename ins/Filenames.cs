@@ -2,7 +2,7 @@ class Filenames {
 	
 	const string DefaultRuleAssemblies = @"$(FxCopDir)\rules";
 	
-	void Main() {
+	void Main(string[] abc) {
 		list.Add(Regex.Replace(dir, @"\$\(FxCopDir\)", fxCopPath, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase));
 		
 		Registry.LocalMachine.OpenSubKey(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\9.0\Setup\EDev");

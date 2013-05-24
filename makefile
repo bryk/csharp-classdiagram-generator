@@ -6,8 +6,13 @@ PYTHONDIR=$(SRCDIR)/python
 
 all: executable
 
-executable: grammars python
-	find build/ -name '*.py' | xargs -d '\n' chmod u+x	
+executable: grammars python oth
+	find build/ -maxdepth 1 -name '*.py' | xargs -d '\n' chmod u+x	
+	chmod u+x	build/cscdgenerator
+
+oth:
+	cp -R -u virtualenv build/
+	(cd src/bash && cp -u * ../../build/)
 
 grammars:
 	java -jar $(LIBDIR)/antlr-3.5-complete.jar -make -fo $(BUILDDIR) $(GRAMMARSDIR)/*.g

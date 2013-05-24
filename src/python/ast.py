@@ -113,15 +113,14 @@ class Modifier(Node):
 
 # to pole ma byc uzytwane jako Typ atrybutu, typ zwracany przez funkcje, albo typ parametru
 class Type(Node):
-  def __init__(self,name):
-    self.name=name
+  def __init__(self, name):
+    self.name = name.replace(r'[', r'［').replace(r']', '］')
   
-  def toStringTree(self,tabs=""):
+  def toStringTree(self, tabs=""):
     return tabs+self.name
 
 # atrybut klasy/interfejsu
 # jako typOfAttr nie chce obiektow "Cl" ani "Iface" tylko "Type"
-
 class Attr(Node):
   def __init__(self,name,typeOfAttr,access):
     self.name=name
@@ -132,6 +131,26 @@ class Attr(Node):
     access = self.access.toStringTree()
     typeOfAttr = self.typeOfAttr.toStringTree()
     return '{3}Attribute: [{0} {1} {2}]\n'.format(access,typeOfAttr,self.name,tabs)
+
+class Property(Node):
+  def __init__(self, name):
+    self.name = name
+    self.typ = None
+    self.modifiers = None
+
+  def setModifiers(self, mods):
+    self.modifiers = mods
+
+  def setType(self, ret):
+    self.typ = ret
+
+  def addToClass(self, cls):
+    cls.addProperty(self)
+
+  def toStringTree(self, tabs=""):
+    modifiers = self.modifiers.toStringTree()
+    typ = self.typ.toStringTree()
+    return '{3}Property: [{0} {1} {2}]\n'.format(modifiers, typ, self.name, tabs)
 
 
 # parametr wystepujacy w metodzie 
@@ -203,7 +222,7 @@ class ClOrIface(Node, NamespaceMember):
     self.attributes.append(attr)
   
   def addProperty(self, attr):
-    self.attributes.append(attr)
+    self.properties.append(attr)
   
   def addIndex(self, attr):
     self.attributes.append(attr)
