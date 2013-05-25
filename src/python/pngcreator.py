@@ -14,8 +14,8 @@ class RepresentationV1:
     self.structs.append(struct)
     
 repV1 = RepresentationV1()
-
-debugMode = True
+pngName="pngName"
+debugMode = False
 allIds = dict()
 allUsings = dict()
 usingDefault = Using("")
@@ -92,12 +92,12 @@ def methRep(meths):
       meth+="#"
     meth+=method.name + "("
     
-    parms="."
+    parms="ˌ "
   
     for param in method.params:
-      parms += param.name+":"+param.typeOfParam.name+"." 
+      parms += param.name+":"+param.typeOfParam.name+"ˌ " 
       
-    parms=parms[1:-1]
+    parms=parms[2:-2]
     meth+=parms+"):"+method.returnType.name+";"
     
     methods+=meth+";"
@@ -105,15 +105,35 @@ def methRep(meths):
   methods=methods[1:-1]
   return methods
 
+
+
+def propRep(meths):
+  methods=";"
+  for method  in meths:
+    meth=""
+    if method.modifiers.access == public:
+      meth+="+"
+    elif method.modifiers.access == private:
+      meth+="-"
+    elif method.modifiers.access == protected:
+      meth+="#"
+    meth+=method.name +":"+method.typ.name+";"
+    methods+=meth+";"
+  methods=methods[1:-1]
+  return methods
+  
 def ifaceRep(iface):
   iface.strRep = "<<Interface>>;"+iface.pathName
   attrs=attrsRep(iface.attributes)
   methods=methRep(iface.methods)
+  props=propRep(iface.properties)
   if not (attrs == ""):
     iface.strRep += "|"+attrs
   if not (methods == ""):
     iface.strRep += "|"+methods
-
+  if not (props == ""):
+    iface.strRep += "|"+props
+    
 def classRep(cl):
   if cl.abstract :
     cl.strRep= "<<Abstract>>;"+cl.pathName
@@ -121,10 +141,13 @@ def classRep(cl):
     cl.strRep = cl.pathName
   attrs=attrsRep(cl.attributes)
   methods=methRep(cl.methods)
+  props=propRep(cl.properties)
   if not (attrs == ""):
     cl.strRep += "|"+attrs
   if not (methods == ""):
     cl.strRep += "|"+methods
+  if not (props == ""):
+    cl.strRep += "|"+props
 
 def setPathId(f,prefName,prev,trailingNamespaces):
   isFile = False
@@ -183,7 +206,7 @@ def getFather(obj,father):
       if debugMode:
         print(True)
       return allIds[name+father].strRep
-  return "sth"
+  return father
 
 
 def createOutString():
@@ -196,11 +219,11 @@ def createOutString():
   
   for iface in repV1.interfaces:
     for father in iface.extends:
-      defs = defs + "["+getFather(iface,father.name)+"]^-.-["+iface.strRep+"], "
+      defs = defs + "["+getFather(iface,father.name)+"]^-["+iface.strRep+"], "
       
   for cl in repV1.classes:
     for father in cl.implement:
-      defs = defs + "["+getFather(cl,father.name)+"]^-.-["+cl.strRep+"], "
+      defs = defs + "["+getFather(cl,father.name)+"]^-["+cl.strRep+"], "
   
   for cl in repV1.classes:
     if cl.extends :

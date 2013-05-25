@@ -153,6 +153,8 @@ class Property(Node):
     return '{3}Property: [{0} {1} {2}]\n'.format(modifiers, typ, self.name, tabs)
 
 
+
+
 # parametr wystepujacy w metodzie 
 class Parameter(Node):
   def __init__(self,typeOfParam,name):

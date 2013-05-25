@@ -23,17 +23,31 @@ def getAsts(files):
   return asts
 
 def usage():
-  print('{0} [file1] [file2] ...\n'.format(sys.argv[0]))
+  print('{0} [-debug] [-filename filename] [file1] [file2] ...\n'.format(sys.argv[0]))
 
 def main():
   if not sys.argv[1:]:
     usage()
   else:
-    asts = getAsts(sys.argv[1:])
+    params=sys.argv[1:]
+    if params[0] == '-debug':
+      pngcreator.debugMode=True
+      params=params[1:]
+    if not params :
+      usage()
+    if params[0] == '-filename' :
+      if not params[1:]:
+        usage()
+      else :
+        pngcreator.pngName=params[1]
+      params=params[2:]
+    if not params :
+      usage()
+    asts = getAsts(params)
     rep = ast.Representation()
     for a in asts:
       rep.addFile(a)
-      print(a.toStringTree())
+
     #sampleast.createSampleV2(rep)
     pngcreator.createPng(rep)
 
