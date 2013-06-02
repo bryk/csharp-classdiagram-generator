@@ -1,6 +1,50 @@
 #!/bin/bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR="$(cd "$( dirname "${BASH_SOURCE[0]}")" && pwd )"
+NAME="cscdgenerator"
 
-(. $DIR/virtualenv/bin/activate && python $DIR/cscdgenerator.py "$@")
+(. $DIR/virtualenv/bin/activate && python $DIR/cscdgenerator.py "$@" 2> /dev/null )
+
+HELP="MANUAL\n OPTIONS\n  -h  help\n  -d  debug\n  -o=outputDir/ (required)\n  -s=sourceDir (oequired)\n SAMPLE USAGE\n  ./$NAME -h\n  ./$NAME -d -o=image -s=ins\n  ./$NAME -o=image -s=ins/\n PARAMETERS SHOULD BE PASSED IN ORDER!"
+
+if [[ ("$#" = 1 && $1 =~ ^-h$ ) ]]; then 
+    echo "$HELP"
+    exit 1
+fi
+
+
+if [[ ("$#" == 3 && $1 =~ ^-d$ && $2 =~ ^-o=.+$ && $3 =~ ^-s=.+$) ]]; then 
+    F=`echo $2 |cut -d= -f 2`
+    echo "output png file:" $F
+    
+    W=`echo $3 |cut -d= -f 2`
+    echo "input dir:" $W
+    R=`find $W -maxdepth 10 -name '*.cs'`
+    echo "INPUT FILES:" $R
+    if [[ -z $R ]]; then 
+        echo "ERROR NO FILES FOUND"
+        exit 1
+    fi
+    $DIR/cscdgenerator.py -debug -filename $F $R
+    exit 0
+fi
+
+if [[ ("$#" == 2 && $1 =~ ^-o=.+$ && $2 =~ ^-s=.+$ ) ]]; then 
+    F=`echo $1 |cut -d= -f 2`
+    echo "output png file:" $F
+    
+    W=`echo $2 |cut -d= -f 2`
+    echo "input dir:" $W
+    R=`find $W -maxdepth 10 -name '*.cs'`
+    echo "INPUT FILES:" $R
+    if [[ -z $R ]]; then 
+        echo "ERROR NO FILES FOUND"
+        exit 1
+    fi
+    $DIR/cscdgenerator.py -filename  $F $R
+    exit 0
+fi
+
+echo -e "$HELP"
+exit 0
 

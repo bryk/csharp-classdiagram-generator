@@ -121,7 +121,11 @@ class_member_declaration returns [ast]
 	| enum_declaration		// 'enum'
 	| delegate_declaration	// 'delegate'
 	| conversion_operator_declaration
-	| constructor_declaration	//	| static_constructor_declaration
+	| cd=constructor_declaration	{
+     $ast = $cd.ast
+     $ast.setReturnType(ast.Type(''))
+     $ast.setModifiers($m.ast if $m.ast else ast.Modifier())
+  }
 	| destructor_declaration
 	) 
 	;
@@ -808,11 +812,15 @@ interface_property_declaration:
 	identifier   '{'   interface_accessor_declarations   '}' ;
 interface_method_declaration returns [ast]:
 	identifier   gen=generic_argument_list?
-	    '('   formal_parameter_list?   ')'   type_parameter_constraints_clauses?   ';' {
+	    '('   fpl=formal_parameter_list?   ')'   type_parameter_constraints_clauses?   ';' {
         $ast = ast.Method()
         $ast.name = $identifier.text
         if $gen.text:
           $ast.name += $gen.text
+        if $fpl.ast:
+          for param in $fpl.ast:
+            if param:
+              $ast.addParameter(param)
       };
 interface_event_declaration: 
 	//attributes?   'new'?   
@@ -907,10 +915,17 @@ operator_body:
 	block ;
 
 ///////////////////////////////////////////////////////
-constructor_declaration:
-	constructor_declarator   constructor_body ;
-constructor_declarator:
-	identifier   '('   formal_parameter_list?   ')'   constructor_initializer? ;
+constructor_declaration returns [ast]:
+	cd=constructor_declarator   constructor_body {$ast = $cd.ast};
+constructor_declarator returns [ast]:
+	identifier   '('   fpl=formal_parameter_list?   ')'   constructor_initializer? {
+    $ast = ast.Method()
+    $ast.name = $identifier.text
+    if $fpl.ast:
+      for param in $fpl.ast:
+        if param:
+          $ast.addParameter(param)
+  };
 constructor_initializer:
 	':'   ('base' | 'this')   '('   argument_list?   ')' ;
 constructor_body:

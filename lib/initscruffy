@@ -1,7 +1,0 @@
-#!/bin/bash
-sudo apt-get install graphviz
-sudo apt-get install librsvg2-bin
-sudo apt-get install plotutils
-
-cd scruffy-master/
-sudo python setup.py install

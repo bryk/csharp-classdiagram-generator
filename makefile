@@ -9,9 +9,9 @@ all: executable
 executable: grammars python oth
 	find build/ -maxdepth 1 -name '*.py' | xargs -d '\n' chmod u+x	
 	chmod u+x	build/cscdgenerator
+	chmod u+x	build/install-libs
 
 oth:
-	cp -R -u virtualenv build/
 	(cd src/bash && cp -u * ../../build/)
 
 grammars:
