@@ -21,12 +21,13 @@ compilation_unit returns [ast]:
 namespace_declaration returns [ast]:
 	'namespace'   qualified_identifier   namespace_block   ';'? {
     $ast = $namespace_block.ast
-    $ast.name = $qualified_identifier.text
+    if $ast:
+      $ast.name = $qualified_identifier.text
   };
 namespace_block returns [ast]:
 	'{'   namespace_body[False]   '}' {$ast = $namespace_body.ast} ;
 namespace_body[bGlobal] returns [ast]:
-	extern_alias_directives?   using_directives?   global_attributes?   ns=namespace_member_declarations? {
+	extern_alias_directives?   u=using_directives?   global_attributes?   ns=namespace_member_declarations? {
     if bGlobal:
       $ast = ast.File()
     else:
@@ -34,13 +35,21 @@ namespace_body[bGlobal] returns [ast]:
     if $ns.ast:
       for decl in $ns.ast:
         decl.addToNamespace($ast)
+    if $u.ast:
+      for using in $u.ast:
+        if using:
+          $ast.usings.append(using)
+
   };
 extern_alias_directives: extern_alias_directive+ ;
 extern_alias_directive: 'extern'   'alias'   identifier  ';' ;
-using_directives: using_directive+ ;
-using_directive: (using_alias_directive | using_namespace_directive) ;
+using_directives returns [ast]
+@init {
+  $ast = [] 
+}: (u=using_directive {$ast.append($u.ast)})+ ;
+using_directive returns [ast]: (using_alias_directive | (d=using_namespace_directive {$ast = $d.ast})) ;
 using_alias_directive: 'using'	  identifier   '='   namespace_or_type_name   ';' ;
-using_namespace_directive: 'using'   namespace_name   ';' ;
+using_namespace_directive returns [ast]: 'using'   n=namespace_name   ';' {$ast = ast.Using($n.text)};
 namespace_member_declarations returns [ast]
 @init {
   $ast = []
@@ -53,9 +62,9 @@ namespace_member_declaration returns [ast]:
 	namespace_declaration {$ast = $namespace_declaration.ast}
 	| attributes?   modifiers?   type_declaration {$ast = $type_declaration.ast};
 type_declaration returns [ast]:
-	('partial') => 'partial'   (class_declaration
+	('partial') => 'partial'   (class_declaration {$ast = $class_declaration.ast}
 								| struct_declaration
-								| interface_declaration)
+								| iface2=interface_declaration {$ast = $iface2.ast})
 	| class_declaration {$ast = $class_declaration.ast}
 	| struct_declaration
 	| iface=interface_declaration {$ast = $iface.ast}
@@ -766,15 +775,18 @@ parameter_array:
 ///////////////////////////////////////////////////////
 interface_declaration returns [ast]:
 	'interface'   identifier   variant_generic_parameter_list? 
-    	interface_base?   type_parameter_constraints_clauses?   interface_body   ';'? {
+    	cb=interface_base?   type_parameter_constraints_clauses?   interface_body   ';'? {
     $ast = ast.Iface($identifier.text)
     for mem in $interface_body.ast:
       mem.addToClass($ast)
+    if $cb.ast:
+      for typ in $cb.ast:
+        $ast.extends.append(typ)
   };
 interface_modifiers: 
 	modifier+ ;
-interface_base: 
-   	':' interface_type_list ;
+interface_base returns [ast]: 
+   	':' i=interface_type_list {$ast = $i.ast};
 interface_body returns [ast]
 @init {
   $ast = [] 
@@ -1177,9 +1189,6 @@ fragment
 TS:
     (' '  |  '\t'  ) 
 ;
-DOC_LINE_COMMENT
-    : 	('///' ~('\n'|'\r')*  ('\r' | '\n')+)
- ;
 
 COMMENT
     :   '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;}
@@ -1226,9 +1235,9 @@ IDENTIFIER:
     IdentifierStart IdentifierPart* ;
 Pragma:
 	//	ignore everything after the pragma since the escape's in strings etc. are different
-	'#' ('pragma' | 'region' | 'endregion' | 'line' | 'warning' | 'error') ~('\n'|'\r')*  ('\r' | '\n');
+	'#' ('pragma' | 'region' | 'endregion' | 'line' | 'warning' | 'error') ~('\n'|'\r')*  ('\r' | '\n') {$channel=HIDDEN;};
 PREPROCESSOR_DIRECTIVE:
-	| PP_CONDITIONAL;
+	| PP_CONDITIONAL {$channel=HIDDEN;};
 fragment
 PP_CONDITIONAL:
 	(IF_TOKEN

@@ -17,13 +17,7 @@ if [[ ("$#" == 3 && $1 =~ ^-d$ && $2 =~ ^-o=.+$ && $3 =~ ^-s=.+$) ]]; then
     
     W=`echo $3 |cut -d= -f 2`
     echo "input dir:" $W
-    R=`find $W -maxdepth 10 -name '*.cs'`
-    echo "INPUT FILES:" $R
-    if [[ -z $R ]]; then 
-        echo "ERROR NO FILES FOUND"
-        exit 1
-    fi
-    $DIR/cscdgenerator.py -debug -filename $F $R
+    find $W -name '*.cs' | xargs -d '\n'  $DIR/cscdgenerator.py -debug -filename $F
     exit 0
 fi
 
@@ -33,13 +27,7 @@ if [[ ("$#" == 2 && $1 =~ ^-o=.+$ && $2 =~ ^-s=.+$ ) ]]; then
     
     W=`echo $2 |cut -d= -f 2`
     echo "input dir:" $W
-    R=`find $W -maxdepth 10 -name '*.cs'`
-    echo "INPUT FILES:" $R
-    if [[ -z $R ]]; then 
-        echo "ERROR NO FILES FOUND"
-        exit 1
-    fi
-    $DIR/cscdgenerator.py -filename  $F $R
+    find $W -name '*.cs' | xargs -d '\n'  $DIR/cscdgenerator.py -filename $F
     exit 0
 fi
 
