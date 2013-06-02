@@ -248,7 +248,7 @@ def createPng(rep):
   defs =createOutString()
   if debugMode:
     print(defs)
-  os.system("suml --png \""+defs+"\" > pngs/"+pngName+".png")
+  os.system("suml --png \""+defs+"\" > \""+pngName+".png\"")
 
 
 def createPngX(rep):

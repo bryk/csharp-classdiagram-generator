@@ -13,21 +13,15 @@ fi
 
 if [[ ("$#" == 3 && $1 =~ ^-d$ && $2 =~ ^-o=.+$ && $3 =~ ^-s=.+$) ]]; then 
     F=`echo $2 |cut -d= -f 2`
-    echo "output png file:" $F
-    
     W=`echo $3 |cut -d= -f 2`
-    echo "input dir:" $W
-    find $W -name '*.cs' | xargs -d '\n'  $DIR/cscdgenerator.py -debug -filename $F
+    find "$W" -name '*.cs' | xargs -d '\n'  $DIR/cscdgenerator.py -debug -filename "$F"
     exit 0
 fi
 
 if [[ ("$#" == 2 && $1 =~ ^-o=.+$ && $2 =~ ^-s=.+$ ) ]]; then 
     F=`echo $1 |cut -d= -f 2`
-    echo "output png file:" $F
-    
     W=`echo $2 |cut -d= -f 2`
-    echo "input dir:" $W
-    find $W -name '*.cs' | xargs -d '\n'  $DIR/cscdgenerator.py -filename $F
+    find "$W" -name '*.cs' | xargs -d '\n'  $DIR/cscdgenerator.py -filename "$F"
     exit 0
 fi
 
