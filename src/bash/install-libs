@@ -4,10 +4,11 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-apt-get install python3 graphviz librsvg2-bin plotutils antlr3
+apt-get install python3 graphviz librsvg2-bin plotutils antlr3 python-imaging
 
 DIR="$(cd "$( dirname "${BASH_SOURCE[0]}")" && pwd )"
 
-(cd $DIR/../lib/scruffy-master/ && python3 setup.py install)
-(cd $DIR/../lib/Python3/ && python3 setup.py install)
+(cd $DIR/../lib/scruffy-master/ && python setup.py install)
+(cd $DIR/../lib/Python3/ && python3 setup.py install 2>/dev/null)
+(cd $DIR/../lib/Python3/ && python3 setup.py install 2>/dev/null)
 

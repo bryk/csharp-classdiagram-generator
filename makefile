@@ -15,7 +15,7 @@ oth:
 	(cd src/bash && cp -u * ../../build/)
 
 grammars:
-	java -jar $(LIBDIR)/antlr-3.5-complete.jar -make -fo $(BUILDDIR) $(GRAMMARSDIR)/*.g
+	java -jar $(LIBDIR)/antlr-3.5-complete.jar -make -fo $(BUILDDIR) $(GRAMMARSDIR)/*.g 2>/dev/null
 
 python:
 	cp $(PYTHONDIR)/*.py $(BUILDDIR)

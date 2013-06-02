@@ -804,12 +804,18 @@ interface_member_declaration returns [ast]
       $ast.setReturnType($type.ast)
       $ast.setModifiers($m.ast if $m.ast else ast.Modifier())
     }
-		         | (member_name   '{') => interface_property_declaration 
+		         | (member_name   '{') => pr=interface_property_declaration {
+              $ast = $pr.ast
+              $ast.setType($type.ast)
+              $ast.setModifiers($m.ast if $m.ast else ast.Modifier())
+             }
 				 | interface_indexer_declaration)
 		) 
 		;
-interface_property_declaration: 
-	identifier   '{'   interface_accessor_declarations   '}' ;
+interface_property_declaration returns [ast]: 
+	identifier   '{'   interface_accessor_declarations   '}' {
+    $ast = ast.Property($identifier.text)
+  };
 interface_method_declaration returns [ast]:
 	identifier   gen=generic_argument_list?
 	    '('   fpl=formal_parameter_list?   ')'   type_parameter_constraints_clauses?   ';' {
