@@ -11,7 +11,7 @@ $ cd csharp-classdiagram-generator
 $ git init
 $ git pull https://github.com/bryk/csharp-classdiagram-generator.git
 $ make
-$ sudo ./src/bash/install-libs
+$ sudo ./build/install-libs
 ```
 
 # Running cscdgenerator
