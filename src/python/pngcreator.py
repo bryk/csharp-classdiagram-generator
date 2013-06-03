@@ -173,6 +173,18 @@ def setPathId(f,prefName,prev,trailingNamespaces):
   for cl in f.classes:
     
     cl.pathName = prefName+cl.name
+    if allIds.get(cl.pathName) :
+      c=allIds[cl.pathName]
+      for m in c.methods:
+        cl.addMethod(m)
+      for m in c.attributes:
+        cl.addAttribute(m)
+      for m in c.properties:
+        cl.addProperty(m)
+      for m in c.indexes:
+        cl.addIndex(m)
+      for m in c.implement :
+        cl.addImplement(m)
     allIds[cl.pathName]=cl
     classRep(cl) 
     repV1.addClass(cl)
@@ -222,8 +234,9 @@ def createOutString():
       defs = defs + "["+getFather(iface,father.name)+"]^-["+iface.strRep+"], "
       
   for cl in repV1.classes:
-    for father in cl.implement:
-      defs = defs + "["+getFather(cl,father.name)+"]^-["+cl.strRep+"], "
+    if allIds[cl.pathName] == cl :
+      for father in cl.implement:
+        defs = defs + "["+getFather(cl,father.name)+"]^-["+cl.strRep+"], "
   
   for cl in repV1.classes:
     if cl.extends :
