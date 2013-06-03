@@ -184,7 +184,12 @@ def setPathId(f,prefName,prev,trailingNamespaces):
       for m in c.indexes:
         cl.addIndex(m)
       for m in c.implement :
-        cl.addImplement(m)
+        tr=True
+        for k in cl.implement:
+          if k.name == m.name :
+            tr=False
+        if tr :
+          cl.addImplement(m)
     allIds[cl.pathName]=cl
     classRep(cl) 
     repV1.addClass(cl)
