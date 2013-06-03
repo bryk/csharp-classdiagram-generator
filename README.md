@@ -20,6 +20,7 @@ $ sudo ./build/install-libs
 $ ./build/cscdgenerator -o=outputFilename -s=sourceDir
 ```
 
+```
 1. -o=outputFile  
    NOT OPTIONAL 
    Destination path to output png file.
@@ -59,6 +60,7 @@ $ ./build/cscdgenerator -o=outputFilename -s=sourceDir
    Contains:
      Internal human readable class representation.
      String representation of diagram passed to scruffy.
+```
    
 
 ```bash
