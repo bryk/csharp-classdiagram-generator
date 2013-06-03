@@ -66,6 +66,7 @@ $ ./build/cscdgenerator -o=outputFilename -s=sourceDir
 ```bash
 $ ./build/cscdgenerator
 ```
+```
 MANUAL
  OPTIONS
   -h  help
@@ -77,4 +78,4 @@ MANUAL
   ./cscdgenerator -d -o=image -s=ins
   ./cscdgenerator -o=image -s=ins/
  PARAMETERS SHOULD BE PASSED IN ORDER!
- 
+```
