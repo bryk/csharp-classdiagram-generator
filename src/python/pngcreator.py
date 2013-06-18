@@ -241,7 +241,12 @@ def createOutString():
   for cl in repV1.classes:
     if allIds[cl.pathName] == cl :
       for father in cl.implement:
-        defs = defs + "["+getFather(cl,father.name)+"]^-["+cl.strRep+"], "
+        f=getFather(cl,father.name)
+        #print(f)
+        if f.startswith('<<Interface>>;') :
+          defs = defs + "["+f+"]^-.-["+cl.strRep+"], "
+        else :
+          defs = defs + "["+f+"]^-["+cl.strRep+"], "
   
   for cl in repV1.classes:
     if cl.extends :
@@ -365,14 +370,14 @@ def createPngX(rep):
     
   for iface in rep.interfaces:
     for father in iface.extends:
-      defs = defs + "["+father.strRep+"]^-.-["+iface.strRep+"], "
+      defs = defs + "["+father.strRep+"]["+iface.strRep+"], "
   for cl in rep.classes:
     for father in cl.implement:
-      defs = defs + "["+father.strRep+"]^-.-["+cl.strRep+"], "
+      defs = defs + "["+father.strRep+"]["+cl.strRep+"], "
   
   for cl in rep.classes:
     if cl.extends :
-      defs = defs+ "["+cl.extends.strRep+"]^-["+cl.strRep+"], "
+      defs = defs+ "["+cl.extends.strRep+"]["+cl.strRep+"], "
   print(defs)
   defs=defs[:-2]
   print("defs")
