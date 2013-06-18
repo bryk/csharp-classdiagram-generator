@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <configSections>
+    <section name="unity" type="Microsoft.Practices.Unity.Configuration.UnityConfigurationSection,
+                                Microsoft.Practices.Unity.Configuration, Version=2.1.505.0,
+                                Culture=neutral, PublicKeyToken=31bf3856ad364e35"/>
+    
+  </configSections>
+
+  <unity>
+    <containers>
+      <container name="DatabaseContainer">
+        <types>
+          <type name="DataBase" type="DBModule.IDataBaseIndexer, DBModule" mapTo="DBModule.EntityHandler, DBModule"/>
+		      <type name="DataBaseFifo" type="DBModule.IDataBaseGetDocument, DBModule" mapTo="DBModule.DocumentFromFifo, DBModule"/>
+        </types>
+      </container>
+    </containers>
+  </unity>
+  
+</configuration>

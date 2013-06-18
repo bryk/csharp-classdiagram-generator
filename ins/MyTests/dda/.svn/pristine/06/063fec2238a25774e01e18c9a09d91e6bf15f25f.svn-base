@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="1b0fd098-2738-406e-ab1f-8a8b2fa1dbc8" name="maciej@MACIEJ-PC 2013-01-13 23:26:45" runUser="maciej-PC\maciej" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="45aec62d-af3e-42b1-a6cf-bd2ad1f24c7d">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="maciej_MACIEJ-PC 2013-01-13 23_26_45">
+      <DeploymentItem filename="D:\TO 2 PROJECT\Analyzer\Dependency Analyzer\DependencyAnalyzer\TestDependencyAnalyzer\refs\Moq.dll" />
+      <DeploymentItem filename="D:\TO 2 PROJECT\Analyzer\Dependency Analyzer\DependencyAnalyzer\DependencyAnalyzer\bin\Debug\DependencyAnalyzer.exe" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2013-01-13T23:26:45.9822456+01:00" queuing="2013-01-13T23:26:46.1362544+01:00" start="2013-01-13T23:26:46.2032582+01:00" finish="2013-01-13T23:26:46.7382888+01:00" />
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="countDependenciesTest" storage="d:\to 2 project\analyzer\dependency analyzer\dependencyanalyzer\testdependencyanalyzer\bin\debug\testdependencyanalyzer.dll" id="aeaf339f-ada3-794a-d1c3-24e87de31d3d">
+      <Execution id="c4d21475-d905-4c75-ac31-a18c94397047" />
+      <TestMethod codeBase="D:/TO 2 PROJECT/Analyzer/Dependency Analyzer/DependencyAnalyzer/TestDependencyAnalyzer/bin/Debug/TestDependencyAnalyzer.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="TestDependencyAnalyzer.DependencyAnalyzerTest, TestDependencyAnalyzer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="countDependenciesTest" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="aeaf339f-ada3-794a-d1c3-24e87de31d3d" executionId="c4d21475-d905-4c75-ac31-a18c94397047" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="c4d21475-d905-4c75-ac31-a18c94397047" testId="aeaf339f-ada3-794a-d1c3-24e87de31d3d" testName="countDependenciesTest" computerName="MACIEJ-PC" duration="00:00:00.0698968" startTime="2013-01-13T23:26:46.2202592+01:00" endTime="2013-01-13T23:26:46.7022868+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c4d21475-d905-4c75-ac31-a18c94397047">
+      <Output>
+        <StdOut>Counting dependencies
+Counting dependencies
+Counting dependencies
+Counting dependencies
+Counting dependencies
+Counting dependencies
+1  -1
+1  -1 -1
+2  -1
+2  -1 -1
+6  -1
+6  -1 -1
+login1 login2 7
+login1 login2 7 7
+login1 prod1 -3
+login1 prod1 -3 -3
+login2 prod1 -1
+login2 prod1 -1 -1
+ prod1 -4
+ prod1 -4 -4
+3  -1
+3  -1 -1
+7  -1
+7  -1 -1
+8  -1
+8  -1 -1
+login1 prod2 -1
+login1 prod2 -1 -1
+login2 prod2 -2
+login2 prod2 -2 -2
+ prod2 -3
+ prod2 -3 -3
+11  -1
+11  -1 -1
+login1 login3 8
+login1 login3 8 8
+login2 login3 6
+login2 login3 6 6
+login1 prod3 -1
+login1 prod3 -1 -1
+login2 prod3 -1
+login2 prod3 -1 -1
+login3 prod1 0
+login3 prod1 0 0
+login3 prod2 0
+login3 prod2 0 0
+login3 prod3 -1
+login3 prod3 -1 -1
+ prod3 -3
+ prod3 -3 -3
+4  -1
+4  -1 -1
+10  -1
+10  -1 -1
+15  -1
+15  -1 -1
+16  -1
+16  -1 -1
+20  -1
+20  -1 -1
+5  -1
+5  -1 -1
+13  -1
+13  -1 -1
+17  -1
+17  -1 -1
+18  -1
+18  -1 -1
+12  -1
+12  -1 -1
+login1 login4 6
+login1 login4 6 6
+login1 login9 3
+login1 login9 3 3
+login1 login7 2
+login1 login7 2 2
+login1 login5 1
+login1 login5 1 1
+login1 login6 1
+login1 login6 1 1
+login2 login4 5
+login2 login4 5 5
+login2 login9 3
+login2 login9 3 3
+login2 login7 2
+login2 login7 2 2
+login2 login5 1
+login2 login5 1 1
+login2 login6 1
+login2 login6 1 1
+login3 login4 8
+login3 login4 8 8
+login3 login9 3
+login3 login9 3 3
+login3 login7 2
+login3 login7 2 2
+login3 login5 1
+login3 login5 1 1
+login3 login6 1
+login3 login6 1 1
+login4 login9 3
+login4 login9 3 3
+login4 login7 2
+login4 login7 2 2
+login4 login5 1
+login4 login5 1 1
+login4 login6 1
+login4 login6 1 1
+login7 login9 2
+login7 login9 2 2
+login5 login9 1
+login5 login9 1 1
+login5 login7 1
+login5 login7 1 1
+login5 login6 1
+login5 login6 1 1
+login6 login9 1
+login6 login9 1 1
+login6 login7 1
+login6 login7 1 1
+login1 prod10 0
+login1 prod10 0 0
+login1 prod11 0
+login1 prod11 0 0
+login1 prod4 -1
+login1 prod4 -1 -1
+login1 prod5 -2
+login1 prod5 -2 -2
+login1 prod6 -1
+login1 prod6 -1 -1
+login1 prod7 -6
+login1 prod7 -6 -6
+login1 prod8 0
+login1 prod8 0 0
+login1 prod9 0
+login1 prod9 0 0
+login2 prod10 0
+login2 prod10 0 0
+login2 prod11 0
+login2 prod11 0 0
+login2 prod4 -3
+login2 prod4 -3 -3
+login2 prod5 -1
+login2 prod5 -1 -1
+login2 prod6 -1
+login2 prod6 -1 -1
+login2 prod7 -1
+login2 prod7 -1 -1
+login2 prod8 0
+login2 prod8 0 0
+login2 prod9 0
+login2 prod9 0 0
+login3 prod10 0
+login3 prod10 0 0
+login3 prod11 0
+login3 prod11 0 0
+login3 prod4 -2
+login3 prod4 -2 -2
+login3 prod5 -3
+login3 prod5 -3 -3
+login3 prod6 -3
+login3 prod6 -3 -3
+login3 prod7 -3
+login3 prod7 -3 -3
+login3 prod8 0
+login3 prod8 0 0
+login3 prod9 0
+login3 prod9 0 0
+login4 prod1 0
+login4 prod1 0 0
+login4 prod10 0
+login4 prod10 0 0
+login4 prod11 0
+login4 prod11 0 0
+login4 prod2 0
+login4 prod2 0 0
+login4 prod3 0
+login4 prod3 0 0
+login4 prod4 -2
+login4 prod4 -2 -2
+login4 prod5 -2
+login4 prod5 -2 -2
+login4 prod6 -2
+login4 prod6 -2 -2
+login4 prod7 -2
+login4 prod7 -2 -2
+login4 prod8 0
+login4 prod8 0 0
+login4 prod9 0
+login4 prod9 0 0
+login9 prod1 0
+login9 prod1 0 0
+login9 prod10 0
+login9 prod10 0 0
+login9 prod11 0
+login9 prod11 0 0
+login9 prod2 0
+login9 prod2 0 0
+login9 prod3 0
+login9 prod3 0 0
+login9 prod4 -1
+login9 prod4 -1 -1
+login9 prod5 0
+login9 prod5 0 0
+login9 prod6 -1
+login9 prod6 -1 -1
+login9 prod7 -1
+login9 prod7 -1 -1
+login9 prod8 0
+login9 prod8 0 0
+login9 prod9 0
+login9 prod9 0 0
+login7 prod1 0
+login7 prod1 0 0
+login7 prod10 0
+login7 prod10 0 0
+login7 prod11 0
+login7 prod11 0 0
+login7 prod2 0
+login7 prod2 0 0
+login7 prod3 0
+login7 prod3 0 0
+login7 prod4 0
+login7 prod4 0 0
+login7 prod5 0
+login7 prod5 0 0
+login7 prod6 -1
+login7 prod6 -1 -1
+login7 prod7 -1
+login7 prod7 -1 -1
+login7 prod8 0
+login7 prod8 0 0
+login7 prod9 0
+login7 prod9 0 0
+login5 prod1 0
+login5 prod1 0 0
+login5 prod10 0
+login5 prod10 0 0
+login5 prod11 0
+login5 prod11 0 0
+login5 prod2 0
+login5 prod2 0 0
+login5 prod3 0
+login5 prod3 0 0
+login5 prod4 0
+login5 prod4 0 0
+login5 prod5 0
+login5 prod5 0 0
+login5 prod6 0
+login5 prod6 0 0
+login5 prod7 -1
+login5 prod7 -1 -1
+login5 prod8 0
+login5 prod8 0 0
+login5 prod9 0
+login5 prod9 0 0
+login6 prod1 0
+login6 prod1 0 0
+login6 prod10 0
+login6 prod10 0 0
+login6 prod11 0
+login6 prod11 0 0
+login6 prod2 0
+login6 prod2 0 0
+login6 prod3 0
+login6 prod3 0 0
+login6 prod4 0
+login6 prod4 0 0
+login6 prod5 0
+login6 prod5 0 0
+login6 prod6 0
+login6 prod6 0 0
+login6 prod7 -1
+login6 prod7 -1 -1
+login6 prod8 0
+login6 prod8 0 0
+login6 prod9 0
+login6 prod9 0 0
+ prod4 -9
+ prod4 -9 -9
+ prod5 -8
+ prod5 -8 -8
+ prod6 -9
+ prod6 -9 -9
+ prod7 -16
+ prod7 -16 -16
+ prod8 0
+ prod8 0 0
+ prod9 0
+ prod9 0 0
+ prod10 0
+ prod10 0 0
+ prod11 0
+ prod11 0 0</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

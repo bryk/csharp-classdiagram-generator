@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="e73a0619-6c31-4bc8-a494-2c8ebfa2c0de" name="maciej@MACIEJ-PC 2013-01-13 23:05:01" runUser="maciej-PC\maciej" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="45aec62d-af3e-42b1-a6cf-bd2ad1f24c7d">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="maciej_MACIEJ-PC 2013-01-13 23_05_01">
+      <DeploymentItem filename="D:\TO 2 PROJECT\Analyzer\Dependency Analyzer\DependencyAnalyzer\TestDependencyAnalyzer\refs\Moq.dll" />
+      <DeploymentItem filename="D:\TO 2 PROJECT\Analyzer\Dependency Analyzer\DependencyAnalyzer\DependencyAnalyzer\bin\Debug\DependencyAnalyzer.exe" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2013-01-13T23:05:01.2976219+01:00" queuing="2013-01-13T23:05:01.4946332+01:00" start="2013-01-13T23:05:01.5506364+01:00" finish="2013-01-13T23:05:02.1916730+01:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="countDependenciesTest" storage="d:\to 2 project\analyzer\dependency analyzer\dependencyanalyzer\testdependencyanalyzer\bin\debug\testdependencyanalyzer.dll" id="aeaf339f-ada3-794a-d1c3-24e87de31d3d">
+      <Execution id="73a79636-e000-43bd-a8a8-df880d052e48" />
+      <TestMethod codeBase="D:/TO 2 PROJECT/Analyzer/Dependency Analyzer/DependencyAnalyzer/TestDependencyAnalyzer/bin/Debug/TestDependencyAnalyzer.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="TestDependencyAnalyzer.DependencyAnalyzerTest, TestDependencyAnalyzer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="countDependenciesTest" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="aeaf339f-ada3-794a-d1c3-24e87de31d3d" executionId="73a79636-e000-43bd-a8a8-df880d052e48" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="73a79636-e000-43bd-a8a8-df880d052e48" testId="aeaf339f-ada3-794a-d1c3-24e87de31d3d" testName="countDependenciesTest" computerName="MACIEJ-PC" duration="00:00:00.1443004" startTime="2013-01-13T23:05:01.5636371+01:00" endTime="2013-01-13T23:05:02.1596712+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="73a79636-e000-43bd-a8a8-df880d052e48">
+      <Output>
+        <StdOut>Counting dependencies
+Counting dependencies
+Counting dependencies</StdOut>
+        <ErrorInfo>
+          <Message>Assert.AreEqual failed. Expected:&lt;11&gt;. Actual:&lt;13&gt;. </Message>
+          <StackTrace>   at TestDependencyAnalyzer.DependencyAnalyzerTest.countDependenciesTest() in D:\TO 2 PROJECT\Analyzer\Dependency Analyzer\DependencyAnalyzer\TestDependencyAnalyzer\DependencyAnalyzerTest.cs:line 171
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

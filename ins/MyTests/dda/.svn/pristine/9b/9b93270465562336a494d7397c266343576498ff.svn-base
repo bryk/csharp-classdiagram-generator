@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{DB0E3FC9-84EB-42CF-9152-3A568E24EE81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentExtractor", "DocumentExtractor\DocumentExtractor.csproj", "{B79A18E9-5BEE-42E3-A573-48CFC9ACB438}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentExtractor.Core", "DocumentExtractor.Core\DocumentExtractor.Core.csproj", "{EA703243-39D3-4A0D-9DBD-87A54985B063}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentExtractor.Model", "DocumentExtractor.Model\DocumentExtractor.Model.csproj", "{396EC311-5257-4D09-BCE1-AB62722F1BF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentExtractor.Tests", "DocumentExtractor.Tests\DocumentExtractor.Tests.csproj", "{8CB3D96A-63D8-42BE-8F3E-CAACC810207F}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB0E3FC9-84EB-42CF-9152-3A568E24EE81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB0E3FC9-84EB-42CF-9152-3A568E24EE81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB0E3FC9-84EB-42CF-9152-3A568E24EE81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB0E3FC9-84EB-42CF-9152-3A568E24EE81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B79A18E9-5BEE-42E3-A573-48CFC9ACB438}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B79A18E9-5BEE-42E3-A573-48CFC9ACB438}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B79A18E9-5BEE-42E3-A573-48CFC9ACB438}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B79A18E9-5BEE-42E3-A573-48CFC9ACB438}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA703243-39D3-4A0D-9DBD-87A54985B063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA703243-39D3-4A0D-9DBD-87A54985B063}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA703243-39D3-4A0D-9DBD-87A54985B063}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA703243-39D3-4A0D-9DBD-87A54985B063}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396EC311-5257-4D09-BCE1-AB62722F1BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396EC311-5257-4D09-BCE1-AB62722F1BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396EC311-5257-4D09-BCE1-AB62722F1BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396EC311-5257-4D09-BCE1-AB62722F1BF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB3D96A-63D8-42BE-8F3E-CAACC810207F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB3D96A-63D8-42BE-8F3E-CAACC810207F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB3D96A-63D8-42BE-8F3E-CAACC810207F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB3D96A-63D8-42BE-8F3E-CAACC810207F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

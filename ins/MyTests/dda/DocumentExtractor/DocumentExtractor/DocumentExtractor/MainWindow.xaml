@@ -1,0 +1,32 @@
+﻿<Window x:Class="DocumentExtractor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Document Extractor" Height="350" Width="525">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="" HorizontalAlignment="Center" VerticalAlignment="Top" Name="Header"/>
+            <ListBox Name="Posts" Grid.Row="1" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" VerticalAlignment="Top" >
+
+            </ListBox>
+            <Grid VerticalAlignment="Bottom" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Path:" />
+                <TextBox Grid.Column="1" Name="Path" GotFocus="PathGotFocus" />
+                <Button Grid.Column="2" Content="Analyze" Name="Analyze" Click="AnalyzeClick"/>
+                <Button Grid.Column="3" Content="Submit" Name="Submit" Click="SubmitClick"/>
+                <Button Grid.Column="4" Content="Cancel" Name="Cancel" Click="CancelClick"/>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>

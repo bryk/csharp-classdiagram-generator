@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="4ccb12f1-ad70-44d4-97c2-1da2fb70b0f7" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.Generic.List`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://192.168.202.79:65001/Server.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Server.wsdl" MetadataType="Wsdl" ID="b9cf42fd-1803-4abd-bd00-da1f0fc54086" SourceId="1" SourceUrl="http://d00d171-laptop:65001/Server.svc?wsdl" />
+    <MetadataFile FileName="Server.xsd" MetadataType="Schema" ID="cae8f467-dc78-4160-9d11-156bfe36b426" SourceId="1" SourceUrl="http://d00d171-laptop:65001/Server.svc?xsd=xsd2" />
+    <MetadataFile FileName="Server.disco" MetadataType="Disco" ID="e1f0ac2a-e874-4097-acd0-8bd937072301" SourceId="1" SourceUrl="http://d00d171-laptop:65001/Server.svc?disco" />
+    <MetadataFile FileName="Server1.xsd" MetadataType="Schema" ID="bd1cbd74-ffd9-46ab-9534-a46880d37de1" SourceId="1" SourceUrl="http://d00d171-laptop:65001/Server.svc?xsd=xsd1" />
+    <MetadataFile FileName="Server3.xsd" MetadataType="Schema" ID="b02e6a39-9206-4b9e-a9d8-0c3256bdd147" SourceId="1" SourceUrl="http://d00d171-laptop:65001/Server.svc?xsd=xsd3" />
+    <MetadataFile FileName="Server2.xsd" MetadataType="Schema" ID="639f4c56-bbb5-4d8f-971a-a39509fc8375" SourceId="1" SourceUrl="http://d00d171-laptop:65001/Server.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

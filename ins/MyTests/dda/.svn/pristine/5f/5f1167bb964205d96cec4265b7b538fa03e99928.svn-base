@@ -1,0 +1,24 @@
+﻿<Application x:Class="DDA.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <LinearGradientBrush x:Key="gradient1">
+            <GradientStop Offset="0" Color="Green"/>
+            <GradientStop Offset="1" Color="White"/>
+        </LinearGradientBrush>
+        <Style x:Key="myButtonStyle1" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource gradient1}" />
+            <Setter Property="FontSize" Value="18"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#FF4788c8" />
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        
+    </Application.Resources>
+    
+</Application>

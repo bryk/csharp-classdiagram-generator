@@ -1,0 +1,38 @@
+﻿<Window x:Class="GuiAnalyzer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DependencyViewer" Height="375" Width="524" Loaded="Window_Loaded">
+    <Grid Height="338" Name="grid1" Width="508">
+        <Grid Height="26" HorizontalAlignment="Left" Margin="8,12,0,0" Name="grid2" VerticalAlignment="Top" Width="495" Background="#37000000">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Height="20" HorizontalAlignment="Left" Margin="6,5,0,0" Name="textBlock1" Text="Login" VerticalAlignment="Top" Width="131" Background="#00000000" />
+            <TextBlock Grid.Column="1" Height="27" HorizontalAlignment="Left" Margin="6,3,0,0" Name="textBlock2" Text="Dependency Level" VerticalAlignment="Top" Width="144" />
+        </Grid>
+        <Grid Height="27" HorizontalAlignment="Left" Margin="8,40,0,0" Name="grid3" VerticalAlignment="Top" Width="496">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBox Name="Login" VerticalAlignment="Top" HorizontalAlignment="Left" Width="163" Height="25" />
+            <TextBox Grid.Column="1" HorizontalAlignment="Left" Name="DependencyLevel" VerticalAlignment="Top" Height="25" Width="165" />
+            <Button Content="Show Results" Grid.Column="2" Name="ShowResults" Click="ShowResults_Click"  />
+        </Grid>
+        <Grid Height="247" HorizontalAlignment="Left" Margin="7,85,0,0" Name="grid4" VerticalAlignment="Top" Width="496">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <ListBox HorizontalAlignment="Left"  Name="Login1" VerticalAlignment="Top" ItemStringFormat="" Panel.ZIndex="3" Margin="-2,1,0,0" Height="245" Width="165">
+
+            </ListBox>
+            <ListBox Grid.Column="1" Height="245" HorizontalAlignment="Left" Margin="1,1,0,0" Name="Login2" VerticalAlignment="Top" Width="164" />
+            <ListBox Grid.Column="2" Height="246" HorizontalAlignment="Left" Margin="3,1,0,0" Name="Value" VerticalAlignment="Top" Width="163" />
+        </Grid>
+    </Grid>
+</Window>
