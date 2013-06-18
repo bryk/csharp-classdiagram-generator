@@ -1,7 +1,7 @@
 csharp-classdiagram-generator
 =============================
 
-This is a simple class diagram generator for C# 4.0 language. It is a command line tool and requires Python3 to run.
+This is a simple class diagram generator for C# 4.0 language. It is a command line tool and requires Python3 & Python2 to run.
 
 # Installing cscdgenerator
 
@@ -25,7 +25,7 @@ $ ./build/cscdgenerator -o=outputFilename -s=sourceDir
    NOT OPTIONAL 
    Destination path to output png file.
    Output path should EXIST.
-   If output directory doesn't exist then file would NOT be created.
+   If output directory doesn't exist then file will NOT be created.
    
    outputFile.png - created png file
    
@@ -33,7 +33,7 @@ $ ./build/cscdgenerator -o=outputFilename -s=sourceDir
    -o="my output dir/my file"
    As a result: 
    "my file.png" in "my output dir" directory will be created
-   If "my output dir" directory doesn't exist then file would NOT be created.
+   If "my output dir" directory doesn't exist then file will NOT be created.
    
 2. -s=sourceDir
    NOT OPTIONAL 
@@ -79,3 +79,4 @@ MANUAL
   ./cscdgenerator -o=image -s=ins/
  PARAMETERS SHOULD BE PASSED IN ORDER!
 ```
+
